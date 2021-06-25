@@ -18,4 +18,4 @@
 
 ./mvnw  release:clean -P 'oss-release' && \
 ./mvnw  release:prepare -P 'oss-release' && \
-./mvnw  release:perform -P 'oss-release'
+./mvnw  release:perform  -Darguments=-Dgpg.passphrase=${GPG_PWD} -P 'oss-release'

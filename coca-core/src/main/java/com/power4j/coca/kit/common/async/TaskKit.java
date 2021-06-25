@@ -17,7 +17,7 @@
 package com.power4j.coca.kit.common.async;
 
 import com.power4j.coca.kit.common.concurrent.CheckedRun;
-import com.power4j.coca.kit.common.util.Guard;
+import com.power4j.coca.kit.common.lang.Guard;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;

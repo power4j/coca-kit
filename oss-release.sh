@@ -16,5 +16,4 @@
 # limitations under the License.
 #
 
-export GPG_TTY=$(tty)
-./mvnw clean deploy -Dgpg.passphrase=${GPG_PWD} -DskipTests=true -P 'oss-release'
+./mvnw deploy -Dgpg.passphrase=${GPG_PWD} -DskipTests=true -P 'oss-release'

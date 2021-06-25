@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.power4j.coca.kit.common.util;
+package com.power4j.coca.kit.common.lang;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.lang.Nullable;

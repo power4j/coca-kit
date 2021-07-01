@@ -18,6 +18,7 @@ package com.power4j.coca.kit.common.lang;
 
 import org.springframework.lang.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -29,17 +30,17 @@ import java.util.Objects;
  * @param <S> source type
  * @param <T> target type
  */
-public class Mapping<S, T> {
+public class ValueMapper<S, T> {
 
 	@Nullable
 	private Map<S, T> rules;
 
-	public static <S, T> Mapping<S, T> of(Pair<S, T>... rules) {
-		Mapping<S, T> mapping = new Mapping<>();
+	public static <S, T> ValueMapper<S, T> of(Collection<Pair<S, T>> rules) {
+		ValueMapper<S, T> valueMapper = new ValueMapper<>();
 		for (Pair<S, T> pair : rules) {
-			mapping.rule(pair.getKey(), pair.getValue());
+			valueMapper.rule(pair.getKey(), pair.getValue());
 		}
-		return mapping;
+		return valueMapper;
 	}
 
 	public void rule(@Nullable S src, @Nullable T target) {

@@ -17,7 +17,7 @@
 package com.power4j.coca.kit.common.async;
 
 import com.power4j.coca.kit.common.concurrent.CheckedRun;
-import com.power4j.coca.kit.common.lang.Guard;
+import com.power4j.coca.kit.common.lang.Obj;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +87,7 @@ public class TaskKit {
 			catch (Exception e) {
 				throw new WrappedException(scheduleAt, e);
 			}
-		}, Guard.keepIfNotNull(executor, ForkJoinPool.commonPool()));
+		}, Obj.keepIfNotNull(executor, ForkJoinPool.commonPool()));
 	}
 
 	static class WrappedException extends RuntimeException {

@@ -28,7 +28,7 @@ import java.util.function.Predicate;
  * @since 1.0
  */
 @UtilityClass
-public class Guard {
+public class Obj {
 
 	/**
 	 * 根据断言返回备选值

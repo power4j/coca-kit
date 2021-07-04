@@ -21,6 +21,7 @@ import org.springframework.lang.Nullable;
 
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * @author CJ (power4j@outlook.com)
@@ -31,66 +32,53 @@ import java.util.function.Predicate;
 public class Obj {
 
 	/**
-	 * 根据断言返回备选值
-	 * @param original 原始值
-	 * @param predicate 断言
-	 * @param alternative 备选值
-	 * @param <T>
-	 * @return 断言成功返回原始值,否则返回备选值
-	 */
-	@Nullable
-	public <T> T keep(@Nullable T original, Predicate<T> predicate, @Nullable T alternative) {
-		return predicate.test(original) ? original : alternative;
-	}
-
-	/**
 	 * 根据是否相同返回备选值
 	 * @param original 原始值
 	 * @param expected 期望值,用于和原始值进行比较
-	 * @param alternative 备选值
+	 * @param supplier 备选值
 	 * @param <T>
 	 * @return 相同返回原始值,否则返回备选值
 	 */
 	@Nullable
-	public <T> T keepIfEq(@Nullable T original, @Nullable T expected, @Nullable T alternative) {
-		return Objects.equals(original, expected) ? original : alternative;
+	public <T> T keepIfEq(@Nullable T original, @Nullable T expected, Supplier<T> supplier) {
+		return Objects.equals(original, expected) ? original : supplier.get();
 	}
 
 	/**
 	 * 根据是否相同返回备选值
 	 * @param original 原始值
 	 * @param expected 期望值,用于和原始值进行比较
-	 * @param alternative 备选值
+	 * @param supplier 备选值
 	 * @param <T>
 	 * @return 不相同返回原始值,否则返回备选值
 	 */
 	@Nullable
-	public <T> T keepIfNq(@Nullable T original, @Nullable T expected, @Nullable T alternative) {
-		return Objects.equals(original, expected) ? original : alternative;
+	public <T> T keepIfNq(@Nullable T original, @Nullable T expected, Supplier<T> supplier) {
+		return Objects.equals(original, expected) ? original : supplier.get();
 	}
 
 	/**
 	 * 根据是否为 {@code null} 返回备选值
 	 * @param origin 原始值
-	 * @param alternative 备选值
+	 * @param supplier 备选值
 	 * @param <T>
 	 * @return 原始值为 {@code null} 返回备选值,否则返回原始值
 	 */
-	public <T> T keepIfNotNull(@Nullable T origin, T alternative) {
-		return Objects.isNull(origin) ? alternative : origin;
+	public <T> T keepIfNotNull(@Nullable T origin, Supplier<T> supplier) {
+		return Objects.isNull(origin) ? supplier.get() : origin;
 	}
 
 	/**
 	 * 根据断言返回备选值
 	 * @param original 原始值
 	 * @param predicate 断言
-	 * @param alternative 备选值
+	 * @param supplier 备选值
 	 * @param <T>
 	 * @return 断言成功返回回原始值,否则返备选值
 	 */
 	@Nullable
-	public <T> T keepIf(@Nullable T original, Predicate<T> predicate, @Nullable T alternative) {
-		return predicate.test(original) ? original : alternative;
+	public <T> T keepIf(@Nullable T original, Predicate<T> predicate, Supplier<T> supplier) {
+		return predicate.test(original) ? original : supplier.get();
 	}
 
 }

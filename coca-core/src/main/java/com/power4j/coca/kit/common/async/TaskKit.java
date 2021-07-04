@@ -87,7 +87,7 @@ public class TaskKit {
 			catch (Exception e) {
 				throw new WrappedException(scheduleAt, e);
 			}
-		}, Obj.keepIfNotNull(executor, ForkJoinPool.commonPool()));
+		}, Obj.keepIfNotNull(executor, ForkJoinPool::commonPool));
 	}
 
 	static class WrappedException extends RuntimeException {

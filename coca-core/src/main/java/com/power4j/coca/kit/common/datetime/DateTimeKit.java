@@ -20,6 +20,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -42,29 +43,63 @@ public class DateTimeKit {
 
 	@Nullable
 	public Date toDate(@Nullable LocalDateTime localDateTime) {
-		if (localDateTime == null) {
-			return null;
-		}
-		return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+		return toDate(localDateTime, ZoneId.systemDefault());
 	}
 
 	@Nullable
 	public LocalDateTime toLocalDateTime(@Nullable Date date) {
+		return toLocalDateTime(date, ZoneId.systemDefault());
+	}
+
+	@Nullable
+	public Date toDate(@Nullable LocalDateTime localDateTime, ZoneId zoneId) {
+		if (localDateTime == null) {
+			return null;
+		}
+		return Date.from(localDateTime.atZone(zoneId).toInstant());
+	}
+
+	@Nullable
+	public LocalDateTime toLocalDateTime(@Nullable Date date, ZoneId zoneId) {
 		if (date == null) {
 			return null;
 		}
-		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		return date.toInstant().atZone(zoneId).toLocalDateTime();
+	}
+
+	@Nullable
+	public Date toDate(@Nullable LocalDateTime localDateTime, ZoneOffset offset) {
+		if (localDateTime == null) {
+			return null;
+		}
+		return Date.from(localDateTime.atOffset(offset).toInstant());
+	}
+
+	@Nullable
+	public LocalDateTime toLocalDateTime(@Nullable Date date, ZoneOffset offset) {
+		if (date == null) {
+			return null;
+		}
+		return date.toInstant().atOffset(offset).toLocalDateTime();
 	}
 
 	// ~ Time Zone
 	// ===================================================================================================
 
 	@Nullable
-	public ZonedDateTime toZonedDateTime(@Nullable LocalDateTime dateTime, ZoneOffset offset) {
+	public ZonedDateTime toZonedDateTime(@Nullable LocalDateTime dateTime, ZoneId zoneId) {
 		if (dateTime == null) {
 			return null;
 		}
-		return dateTime.atZone(offset);
+		return dateTime.atZone(zoneId);
+	}
+
+	@Nullable
+	public OffsetDateTime toOffsetDateTime(@Nullable LocalDateTime dateTime, ZoneOffset offset) {
+		if (dateTime == null) {
+			return null;
+		}
+		return dateTime.atOffset(offset);
 	}
 
 	@Nullable

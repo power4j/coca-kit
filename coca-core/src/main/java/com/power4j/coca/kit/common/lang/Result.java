@@ -106,7 +106,7 @@ public class Result<T> implements Serializable {
 
 	public T requiredData() {
 		if (Objects.isNull(data)) {
-			throw new AssertionFailException("data is null");
+			throw new AssertionFailException("Data is null (" + simpleDescribe() + ")");
 		}
 		return data;
 	}
@@ -143,6 +143,10 @@ public class Result<T> implements Serializable {
 			return create(code, message, func.apply(data), hint);
 		}
 		return create(code, message, null, hint);
+	}
+
+	public String simpleDescribe() {
+		return "code = " + code + ",msg = " + message + ",hint = " + hint;
 	}
 
 }

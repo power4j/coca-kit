@@ -16,4 +16,4 @@
 # limitations under the License.
 #
 
-./mvnw deploy -Dgpg.passphrase=${GPG_PWD} -DskipTests=true -P 'oss-release'
+./mvnw clean deploy -Dgpg.passphrase=${GPG_PWD} -DskipTests=true -P 'oss-release'

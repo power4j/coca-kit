@@ -21,6 +21,7 @@ import lombok.Data;
 import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -57,18 +58,23 @@ public class Result<T> implements Serializable {
 	private T data;
 
 	/**
-	 * 提示
+	 * 用于扩展
 	 */
 	@Nullable
-	private String hint;
+	private Map<String, Object> metaInfo;
 
-	public static <T> Result<T> create(String code, @Nullable String message, @Nullable T data, @Nullable String hint) {
+	public static <T> Result<T> create(String code, @Nullable String message, @Nullable T data,
+			@Nullable Map<String, Object> metaInfo) {
 		Result<T> result = new Result<>();
 		result.setCode(code);
 		result.setMessage(message);
 		result.setData(data);
-		result.setHint(hint);
+		result.setMetaInfo(metaInfo);
 		return result;
+	}
+
+	public static <T> Result<T> create(String code, @Nullable String message, @Nullable T data) {
+		return create(code, message, data, null);
 	}
 
 	public boolean codeEquals(@Nullable String expected, boolean caseSensitive) {
@@ -118,7 +124,7 @@ public class Result<T> implements Serializable {
 	 * @return 返回新的 Result 实例
 	 */
 	public <U> Result<U> map(Function<T, U> func) {
-		return create(code, message, func.apply(data), hint);
+		return create(code, message, func.apply(data), metaInfo);
 	}
 
 	/**
@@ -128,7 +134,7 @@ public class Result<T> implements Serializable {
 	 * @return 返回新的 Result 实例
 	 */
 	public <U> Result<U> mapIfPresent(Function<T, U> func) {
-		return create(code, message, Objects.nonNull(data) ? func.apply(data) : null, hint);
+		return create(code, message, Objects.nonNull(data) ? func.apply(data) : null, metaInfo);
 	}
 
 	/**
@@ -140,13 +146,13 @@ public class Result<T> implements Serializable {
 	 */
 	public <U> Result<U> mapOnCode(Predicate<String> codePredicate, Function<T, U> func) {
 		if (codePredicate.test(code)) {
-			return create(code, message, func.apply(data), hint);
+			return create(code, message, func.apply(data), metaInfo);
 		}
-		return create(code, message, null, hint);
+		return create(code, message, null, metaInfo);
 	}
 
 	public String simpleDescribe() {
-		return "code = " + code + ",msg = " + message + ",hint = " + hint;
+		return "code = " + code + ",msg = " + message;
 	}
 
 }

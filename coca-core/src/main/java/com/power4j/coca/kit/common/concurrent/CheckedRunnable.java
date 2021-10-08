@@ -22,11 +22,11 @@ package com.power4j.coca.kit.common.concurrent;
  * @since 1.0
  */
 @FunctionalInterface
-public interface CheckedRun {
+public interface CheckedRunnable {
 
 	/**
 	 * any action
-	 * @throws Exception
+	 * @throws Exception 任何异常
 	 */
 	void run() throws Exception;
 

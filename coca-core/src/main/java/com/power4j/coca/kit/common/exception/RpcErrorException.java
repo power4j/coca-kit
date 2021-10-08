@@ -18,20 +18,20 @@ package com.power4j.coca.kit.common.exception;
 
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/6/24
+ * @date 2021/8/20
  * @since 1.0
  */
-public class AssertionFailException extends RuntimeFaultException {
+public class RpcErrorException extends RuntimeException {
 
-	public AssertionFailException(String message) {
+	public RpcErrorException(String message) {
 		super(message);
 	}
 
-	public AssertionFailException(String message, Throwable cause) {
+	public RpcErrorException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public AssertionFailException(Throwable cause) {
+	public RpcErrorException(Throwable cause) {
 		super(cause);
 	}
 

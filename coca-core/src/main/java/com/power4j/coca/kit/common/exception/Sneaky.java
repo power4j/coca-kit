@@ -16,23 +16,32 @@
 
 package com.power4j.coca.kit.common.exception;
 
+import com.power4j.coca.kit.common.concurrent.CheckedRunnable;
+import com.power4j.coca.kit.common.util.function.CheckedSupplier;
+
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/6/24
+ * @date 2021/9/17
  * @since 1.0
  */
-public class AssertionFailException extends RuntimeFaultException {
+public class Sneaky {
 
-	public AssertionFailException(String message) {
-		super(message);
+	public static void run(CheckedRunnable runnable) {
+		try {
+			runnable.run();
+		}
+		catch (Exception e) {
+			throw UncheckedException.wrap(e);
+		}
 	}
 
-	public AssertionFailException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public AssertionFailException(Throwable cause) {
-		super(cause);
+	public static <T> T apply(CheckedSupplier<T> supplier) {
+		try {
+			return supplier.apply();
+		}
+		catch (Exception e) {
+			throw UncheckedException.wrap(e);
+		}
 	}
 
 }

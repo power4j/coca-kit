@@ -16,9 +16,9 @@
 
 package com.power4j.coca.kit.common.async;
 
-import com.power4j.coca.kit.common.concurrent.CheckedRun;
+import com.power4j.coca.kit.common.concurrent.CheckedRunnable;
+import com.power4j.coca.kit.common.concurrent.CompletableFutureKit;
 import com.power4j.coca.kit.common.lang.Obj;
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
@@ -27,6 +27,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.BiConsumer;
@@ -41,63 +42,78 @@ import java.util.function.Consumer;
 @UtilityClass
 public class TaskKit {
 
-	public void runLater(CheckedRun run, Consumer<Duration> onComplete) {
-		runLater(run, null, onComplete, null);
+	public Builder builder() {
+		return new Builder();
 	}
 
-	public void runLater(CheckedRun run, BiConsumer<Duration, Throwable> onError) {
+	public void runLater(CheckedRunnable run, Consumer<Duration> onSuccess) {
+		runLater(run, null, onSuccess, null);
+	}
+
+	public void runLater(CheckedRunnable run, BiConsumer<Duration, Throwable> onError) {
 		runLater(run, null, null, onError);
 	}
 
-	public void runLater(CheckedRun run, Consumer<Duration> onComplete, BiConsumer<Duration, Throwable> onError) {
-		runLater(run, null, onComplete, onError);
+	public void runLater(CheckedRunnable run, Consumer<Duration> onSuccess, BiConsumer<Duration, Throwable> onError) {
+		runLater(run, null, onSuccess, onError);
 	}
 
-	public void runLater(CheckedRun run, @Nullable Executor executor, @Nullable Consumer<Duration> onComplete,
+	public void runLater(CheckedRunnable runnable, @Nullable Executor executor, @Nullable Consumer<Duration> onSuccess,
 			@Nullable BiConsumer<Duration, Throwable> onError) {
-		submit(run, executor, onComplete).exceptionally(e -> {
-			assert e.getClass().equals(WrappedException.class);
-			WrappedException wrappedException = (WrappedException) e;
-			if (Objects.nonNull(onError)) {
-				onError.accept(Duration.between(wrappedException.getTimestamp(), Instant.now()), e);
-			}
-			else {
-				log.debug(e.getMessage(), e);
-			}
-			return null;
-		});
+		Builder builder = new Builder().successCallback(onSuccess).errorCallback(onError).executor(executor);
+		builder.run(runnable);
 	}
 
-	public CompletableFuture<Void> submit(CheckedRun run, @Nullable Executor executor,
-			@Nullable Consumer<Duration> onComplete) {
-		return submit(run, executor).thenAccept(duration -> {
-			if (Objects.nonNull(onComplete)) {
-				onComplete.accept(duration);
-			}
-		});
-	}
+	public static class Builder {
 
-	public CompletableFuture<Duration> submit(CheckedRun run, @Nullable Executor executor) {
-		final Instant scheduleAt = Instant.now();
-		return CompletableFuture.supplyAsync(() -> {
-			try {
-				run.run();
-				return Duration.between(scheduleAt, Instant.now());
-			}
-			catch (Exception e) {
-				throw new WrappedException(scheduleAt, e);
-			}
-		}, Obj.keepIfNotNull(executor, ForkJoinPool::commonPool));
-	}
+		@Nullable
+		private Consumer<Duration> successCallback;
 
-	static class WrappedException extends RuntimeException {
+		@Nullable
+		private BiConsumer<Duration, Throwable> errorCallback;
 
-		@Getter
-		private final Instant timestamp;
+		@Nullable
+		private Executor executor;
 
-		public WrappedException(Instant timestamp, Throwable cause) {
-			super(cause);
-			this.timestamp = timestamp;
+		Builder() {
+		}
+
+		public Builder successCallback(@Nullable Consumer<Duration> successCallback) {
+			this.successCallback = successCallback;
+			return this;
+		}
+
+		public Builder errorCallback(@Nullable BiConsumer<Duration, Throwable> errorCallback) {
+			this.errorCallback = errorCallback;
+			return this;
+		}
+
+		public Builder executor(@Nullable Executor executor) {
+			this.executor = executor;
+			return this;
+		}
+
+		public CompletableFuture<Instant> run(CheckedRunnable runnable) {
+			final Consumer<Duration> successHandler = this.successCallback;
+			final BiConsumer<Duration, Throwable> errorHandler = this.errorCallback;
+			return CompletableFutureKit.supplyAsync(() -> {
+				Instant startAt = Instant.now();
+				try {
+					runnable.run();
+					if (Objects.nonNull(successHandler)) {
+						successHandler.accept(Duration.between(startAt, Instant.now()));
+					}
+				}
+				catch (Exception e) {
+					if (Objects.nonNull(errorHandler)) {
+						errorHandler.accept(Duration.between(startAt, Instant.now()), e);
+					}
+					else {
+						throw new CompletionException(e.getMessage(), e);
+					}
+				}
+				return startAt;
+			}, Obj.keepIfNotNull(executor, ForkJoinPool::commonPool));
 		}
 
 	}

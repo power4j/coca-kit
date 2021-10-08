@@ -18,21 +18,32 @@ package com.power4j.coca.kit.common.exception;
 
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/6/24
+ * @date 2021/9/16
  * @since 1.0
  */
-public class AssertionFailException extends RuntimeFaultException {
+public final class UncheckedException extends RuntimeException {
 
-	public AssertionFailException(String message) {
-		super(message);
-	}
-
-	public AssertionFailException(String message, Throwable cause) {
+	UncheckedException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public AssertionFailException(Throwable cause) {
-		super(cause);
+	/**
+	 * 包装受检异常
+	 * @param message the message
+	 * @param cause the cause
+	 * @return new UncheckedException object
+	 */
+	public static UncheckedException wrap(String message, Exception cause) {
+		return new UncheckedException(message, cause);
+	}
+
+	/**
+	 * 包装受检异常
+	 * @param cause the cause
+	 * @return new UncheckedException object
+	 */
+	public static UncheckedException wrap(Exception cause) {
+		return new UncheckedException(cause.getMessage(), cause);
 	}
 
 }

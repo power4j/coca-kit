@@ -32,30 +32,43 @@ import java.util.Objects;
  */
 public class ValueMapper<S, T> {
 
-	@Nullable
-	private Map<S, T> rules;
+	private final Map<S, T> rules;
 
-	public static <S, T> ValueMapper<S, T> of(Collection<Pair<S, T>> rules) {
-		ValueMapper<S, T> valueMapper = new ValueMapper<>();
-		for (Pair<S, T> pair : rules) {
-			valueMapper.rule(pair.getKey(), pair.getValue());
-		}
-		return valueMapper;
+	public static <S, T> Builder<S, T> builder() {
+		return new Builder<>();
 	}
 
-	public void rule(@Nullable S src, @Nullable T target) {
-		if (Objects.isNull(rules)) {
-			rules = new HashMap<>(2);
-		}
-		rules.put(src, target);
+	ValueMapper(Map<S, T> rules) {
+		this.rules = rules;
 	}
 
-	@Nullable
-	public T map(@Nullable S src, @Nullable T defaultValue) {
-		if (Objects.isNull(rules) || rules.isEmpty()) {
+	public T getValue(@Nullable S src, T defaultValue) {
+		if (Objects.isNull(src)) {
 			return defaultValue;
 		}
-		return rules.get(src);
+		return rules.getOrDefault(src, defaultValue);
+	}
+
+	public static class Builder<S, T> {
+
+		private final Map<S, T> ruleMap = new HashMap<>();
+
+		public Builder<S, T> rule(S src, T target) {
+			ruleMap.put(src, target);
+			return this;
+		}
+
+		public Builder<S, T> rules(Collection<Pair<S, T>> rules) {
+			for (Pair<S, T> pair : rules) {
+				ruleMap.put(Objects.requireNonNull(pair.getKey()), Objects.requireNonNull(pair.getValue()));
+			}
+			return this;
+		}
+
+		public ValueMapper<S, T> build() {
+			return new ValueMapper<>(ruleMap);
+		}
+
 	}
 
 }

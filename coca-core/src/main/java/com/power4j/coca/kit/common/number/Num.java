@@ -37,5 +37,7 @@ public interface Num {
 
 	int EIGHT = 8;
 
+	int NE_ONE = -1;
+
 	// @formatter:off
 }

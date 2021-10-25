@@ -32,6 +32,17 @@ import java.util.function.Supplier;
 public class Obj {
 
 	/**
+	 * 类型转换
+	 * @param obj 对象实例
+	 * @param <T> 目标类型
+	 * @return T
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T cast(Object obj) {
+		return (T) obj;
+	}
+
+	/**
 	 * 根据是否相同返回备选值
 	 * @param original 原始值
 	 * @param expected 期望值,用于和原始值进行比较

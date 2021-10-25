@@ -14,34 +14,15 @@
  * limitations under the License.
  */
 
-package com.power4j.coca.kit.common.exception;
-
-import com.power4j.coca.kit.common.concurrent.CheckedRunnable;
-import com.power4j.coca.kit.common.util.function.CheckedSupplier;
+package com.power4j.coca.kit.common.io.codec;
 
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/9/17
+ * @date 2021/10/25
  * @since 1.0
+ * @param <S> 输入类型
+ * @param <T> 输出类型
  */
-public class Sneaky {
-
-	public static void run(CheckedRunnable runnable) {
-		try {
-			runnable.run();
-		}
-		catch (Exception e) {
-			throw UncheckedException.wrap(e);
-		}
-	}
-
-	public static <T> T apply(CheckedSupplier<T> supplier) {
-		try {
-			return supplier.apply();
-		}
-		catch (Exception e) {
-			throw UncheckedException.wrap(e);
-		}
-	}
+public interface Codec<S, T> extends Encoder<S, T>, Decoder<T, S> {
 
 }

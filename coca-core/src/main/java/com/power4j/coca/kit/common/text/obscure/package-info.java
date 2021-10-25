@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 
-package com.power4j.coca.kit.common.exception;
-
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/9/16
+ * @date 2021/5/14
  * @since 1.0
  */
-public final class UncheckedException extends RuntimeException {
+@NonNullApi
+@NonNullFields
+package com.power4j.coca.kit.common.text.obscure;
 
-	UncheckedException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	/**
-	 * 包装受检异常
-	 * @param cause the cause
-	 * @return new UncheckedException object
-	 */
-	public static UncheckedException of(Exception cause) {
-		return new UncheckedException(cause.getMessage(), cause);
-	}
-
-}
+import org.springframework.lang.NonNullApi;
+import org.springframework.lang.NonNullFields;

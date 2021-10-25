@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package com.power4j.coca.kit.common.exception;
+package com.power4j.coca.kit.common.io.codec;
+
+import java.io.IOException;
 
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/9/16
+ * @date 2021/10/25
  * @since 1.0
  */
-public final class UncheckedException extends RuntimeException {
+public class CodecException extends IOException {
 
-	UncheckedException(String message, Throwable cause) {
+	public CodecException(String message) {
+		super(message);
+	}
+
+	public CodecException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	/**
-	 * 包装受检异常
-	 * @param cause the cause
-	 * @return new UncheckedException object
-	 */
-	public static UncheckedException of(Exception cause) {
-		return new UncheckedException(cause.getMessage(), cause);
+	public CodecException(Throwable cause) {
+		super(cause);
 	}
 
 }

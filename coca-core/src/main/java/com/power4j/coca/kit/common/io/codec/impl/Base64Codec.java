@@ -14,26 +14,37 @@
  * limitations under the License.
  */
 
-package com.power4j.coca.kit.common.exception;
+package com.power4j.coca.kit.common.io.codec.impl;
+
+import cn.hutool.core.codec.Base64;
+import com.power4j.coca.kit.common.io.codec.Codec;
+import com.power4j.coca.kit.common.io.codec.CodecException;
+
+import java.nio.ByteBuffer;
 
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/9/16
+ * @date 2021/10/25
  * @since 1.0
  */
-public final class UncheckedException extends RuntimeException {
+public class Base64Codec implements Codec<ByteBuffer, String> {
 
-	UncheckedException(String message, Throwable cause) {
-		super(message, cause);
+	public final static String NAME = "b64";
+
+	@Override
+	public String name() {
+		return NAME;
 	}
 
-	/**
-	 * 包装受检异常
-	 * @param cause the cause
-	 * @return new UncheckedException object
-	 */
-	public static UncheckedException of(Exception cause) {
-		return new UncheckedException(cause.getMessage(), cause);
+	@Override
+	public ByteBuffer decode(String src) throws CodecException {
+		byte[] raw = Base64.decode(src);
+		return ByteBuffer.wrap(raw);
+	}
+
+	@Override
+	public String encode(ByteBuffer src) throws CodecException {
+		return Base64.encode(src.array());
 	}
 
 }

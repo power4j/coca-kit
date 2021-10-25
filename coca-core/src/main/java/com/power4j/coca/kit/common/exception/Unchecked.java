@@ -16,24 +16,35 @@
 
 package com.power4j.coca.kit.common.exception;
 
+import com.power4j.coca.kit.common.concurrent.CheckedRunnable;
+import com.power4j.coca.kit.common.util.function.CheckedSupplier;
+
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/9/16
+ * @date 2021/9/17
  * @since 1.0
  */
-public final class UncheckedException extends RuntimeException {
+public final class Unchecked {
 
-	UncheckedException(String message, Throwable cause) {
-		super(message, cause);
+	private Unchecked() {
 	}
 
-	/**
-	 * 包装受检异常
-	 * @param cause the cause
-	 * @return new UncheckedException object
-	 */
-	public static UncheckedException of(Exception cause) {
-		return new UncheckedException(cause.getMessage(), cause);
+	public static void run(CheckedRunnable runnable) {
+		try {
+			runnable.run();
+		}
+		catch (Exception e) {
+			throw UncheckedException.of(e);
+		}
+	}
+
+	public static <T> T apply(CheckedSupplier<T> supplier) {
+		try {
+			return supplier.apply();
+		}
+		catch (Exception e) {
+			throw UncheckedException.of(e);
+		}
 	}
 
 }

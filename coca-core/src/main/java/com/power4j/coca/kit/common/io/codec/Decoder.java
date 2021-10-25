@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-package com.power4j.coca.kit.common.exception;
+package com.power4j.coca.kit.common.io.codec;
 
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/9/16
+ * @date 2021/10/25
  * @since 1.0
+ * @param <S> 输入类型
+ * @param <T> 输出类型
  */
-public final class UncheckedException extends RuntimeException {
-
-	UncheckedException(String message, Throwable cause) {
-		super(message, cause);
-	}
+public interface Decoder<S, T> {
 
 	/**
-	 * 包装受检异常
-	 * @param cause the cause
-	 * @return new UncheckedException object
+	 * 名称
+	 * @return 返回编码器名称
 	 */
-	public static UncheckedException of(Exception cause) {
-		return new UncheckedException(cause.getMessage(), cause);
-	}
+	String name();
+
+	/**
+	 * 解码
+	 * @param src 输入类型
+	 * @return 返回解码后的数据
+	 * @throws CodecException 编码失败
+	 */
+	T decode(S src) throws CodecException;
 
 }

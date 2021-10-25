@@ -82,6 +82,25 @@ public class BufferKit {
 	}
 
 	/**
+	 * 复制数据
+	 * @param buf 数据源
+	 * @param size 目标长度,大于buf.length 截断,小于则使用filler填充
+	 * @param filler 填充值
+	 * @return 返回新的ByteBuffer
+	 */
+	public ByteBuffer copyToFit(byte[] buf, int size, int filler) {
+		if (size <= buf.length) {
+			return copyFrom(buf, 0, size);
+		}
+		ByteBuffer buffer = allocate(size);
+		buffer.put(buf);
+		for (int i = buf.length; i < size; ++i) {
+			buffer.put((byte) filler);
+		}
+		return buffer;
+	}
+
+	/**
 	 * 从HEX字符串创建
 	 * @param hexStr
 	 * @return ByteBuffer

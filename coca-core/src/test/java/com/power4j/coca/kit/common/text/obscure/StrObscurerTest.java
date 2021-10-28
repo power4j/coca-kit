@@ -20,6 +20,7 @@ import com.power4j.coca.kit.common.io.buffer.BufferKit;
 import com.power4j.coca.kit.common.io.codec.Codec;
 import com.power4j.coca.kit.common.io.codec.CodecException;
 import com.power4j.coca.kit.common.io.codec.impl.BufferGz;
+import com.power4j.coca.kit.common.text.StringPool;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -76,6 +77,7 @@ class StrObscurerTest {
 		StrObscurer.EncoderSelector selector = (s, l) -> l.stream()
 				.filter(enc -> enc.name().equals(BufferGz.NAME) && s.length() > 10).collect(Collectors.toList());
 		StrObscurer obscurer = StrObscurer.ofEncoders(Arrays.asList(new BufferGz(), new AppendX()));
+		obscurer.setFlagPrefix(StringPool.EMPTY);
 		System.out.println("encode :");
 		System.out.println(text);
 		String enc = obscurer.obscure(text, selector);

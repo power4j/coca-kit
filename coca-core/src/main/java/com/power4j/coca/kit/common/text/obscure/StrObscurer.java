@@ -65,6 +65,8 @@ public class StrObscurer {
 
 	private final static Charset CHARSET = StandardCharsets.UTF_8;
 
+	private String flagPrefix = StringPool.PLUS;
+
 	private Codec<ByteBuffer, String> strCodec = new Base64Codec();
 
 	private Map<String, Codec<ByteBuffer, ByteBuffer>> codecRegistry = Collections.emptyMap();
@@ -121,6 +123,14 @@ public class StrObscurer {
 		this.strCodec = strCodec;
 	}
 
+	/**
+	 * 设置算法标记前缀,默认是加号
+	 * @param flagPrefix 前缀字符串,建议控制在2个字符内
+	 */
+	public void setFlagPrefix(String flagPrefix) {
+		this.flagPrefix = flagPrefix;
+	}
+
 	public void setCodecList(List<Codec<ByteBuffer, ByteBuffer>> codecs) {
 		Map<String, Codec<ByteBuffer, ByteBuffer>> map = new TreeMap<>();
 		codecs.forEach(o -> map.put(o.name(), o));
@@ -139,11 +149,19 @@ public class StrObscurer {
 		return buffer;
 	}
 
+	String encodeFlag(Encoder<?, ?> encoder) {
+		return flagPrefix + encoder.name();
+	}
+
+	String extractFlag(String value) {
+		return CharSequenceUtil.removePrefix(value, flagPrefix);
+	}
+
 	String buildHeader(@Nullable List<? extends Encoder<?, ?>> encoders) {
 		if (Objects.isNull(encoders) || encoders.isEmpty()) {
 			return StringPool.EMPTY;
 		}
-		String header = encoders.stream().map(Encoder::name).collect(Collectors.joining(FLAG_SEPARATOR));
+		String header = encoders.stream().map(this::encodeFlag).collect(Collectors.joining(FLAG_SEPARATOR));
 		return header + BODY_SEPARATOR;
 	}
 
@@ -151,7 +169,8 @@ public class StrObscurer {
 		final int piece = 2;
 		List<String> flagAndBody = CharSequenceUtil.splitTrim(input, BODY_SEPARATOR, piece);
 		if (flagAndBody.size() >= piece) {
-			List<String> flags = CharSequenceUtil.splitTrim(flagAndBody.get(0), FLAG_SEPARATOR);
+			List<String> flags = CharSequenceUtil.splitTrim(flagAndBody.get(0), FLAG_SEPARATOR).stream()
+					.map(this::extractFlag).collect(Collectors.toList());
 			return Pair.of(flags, flagAndBody.get(1));
 		}
 		return Pair.of(Collections.emptyList(), flagAndBody.get(0));

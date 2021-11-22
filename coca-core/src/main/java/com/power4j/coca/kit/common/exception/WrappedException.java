@@ -16,36 +16,23 @@
 
 package com.power4j.coca.kit.common.exception;
 
-import com.power4j.coca.kit.common.concurrent.CheckedRunnable;
-import com.power4j.coca.kit.common.util.function.CheckedSupplier;
-
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/9/17
+ * @date 2021/11/22
  * @since 1.0
- * @deprecated
  */
-public final class Unchecked {
+public class WrappedException extends RuntimeException {
 
-	private Unchecked() {
+	WrappedException(Throwable cause) {
+		super(cause);
 	}
 
-	public static void run(CheckedRunnable runnable) {
-		try {
-			runnable.run();
-		}
-		catch (Exception e) {
-			throw UncheckedException.of(e);
-		}
+	public static WrappedException wrap(Throwable cause) {
+		return new WrappedException(cause);
 	}
 
-	public static <T> T apply(CheckedSupplier<T> supplier) {
-		try {
-			return supplier.apply();
-		}
-		catch (Exception e) {
-			throw UncheckedException.of(e);
-		}
+	public <E extends Throwable> E getOriginal(Class<E> clazz) {
+		return clazz.cast(getCause());
 	}
 
 }

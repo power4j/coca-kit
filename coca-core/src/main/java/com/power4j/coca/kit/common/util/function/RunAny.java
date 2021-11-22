@@ -14,38 +14,19 @@
  * limitations under the License.
  */
 
-package com.power4j.coca.kit.common.exception;
-
-import com.power4j.coca.kit.common.concurrent.CheckedRunnable;
-import com.power4j.coca.kit.common.util.function.CheckedSupplier;
+package com.power4j.coca.kit.common.util.function;
 
 /**
  * @author CJ (power4j@outlook.com)
- * @date 2021/9/17
+ * @date 2021/11/22
  * @since 1.0
- * @deprecated
  */
-public final class Unchecked {
+public interface RunAny {
 
-	private Unchecked() {
-	}
-
-	public static void run(CheckedRunnable runnable) {
-		try {
-			runnable.run();
-		}
-		catch (Exception e) {
-			throw UncheckedException.of(e);
-		}
-	}
-
-	public static <T> T apply(CheckedSupplier<T> supplier) {
-		try {
-			return supplier.apply();
-		}
-		catch (Exception e) {
-			throw UncheckedException.of(e);
-		}
-	}
+	/**
+	 * Run
+	 * @throws Throwable any, if possible
+	 */
+	void run() throws Throwable;
 
 }

@@ -23,7 +23,7 @@ import com.power4j.coca.kit.common.util.function.CheckedSupplier;
  * @author CJ (power4j@outlook.com)
  * @date 2021/9/17
  * @since 1.0
- * @deprecated
+ * @deprecated use Failable
  */
 public final class Unchecked {
 

@@ -20,6 +20,7 @@ package com.power4j.coca.kit.common.util.function;
  * @author CJ (power4j@outlook.com)
  * @date 2021/9/13
  * @since 1.0
+ * @deprecated use Failable
  */
 @FunctionalInterface
 public interface CheckedSupplier<R> {

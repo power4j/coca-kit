@@ -20,6 +20,7 @@ package com.power4j.coca.kit.common.concurrent;
  * @author CJ (power4j@outlook.com)
  * @date 2021/6/17
  * @since 1.0
+ * @deprecated
  */
 @FunctionalInterface
 public interface CheckedRunnable {

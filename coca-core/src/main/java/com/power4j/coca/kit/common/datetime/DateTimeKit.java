@@ -34,6 +34,10 @@ import java.util.Date;
 @UtilityClass
 public class DateTimeKit {
 
+	public static final LocalDateTime EPOCH = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+
+	public static final LocalDateTime FOREVER = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
+
 	public LocalDateTime utcNow() {
 		return LocalDateTime.now(ZoneOffset.UTC);
 	}

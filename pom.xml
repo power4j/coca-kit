@@ -62,7 +62,6 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <spring-boot.version>${project.parent.version}</spring-boot.version>
     <!-- plugin -->
     <spring-javaformat.plugin.version>0.0.28</spring-javaformat.plugin.version>
     <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
@@ -73,29 +72,27 @@
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
     <!-- libs -->
-    <slf4j.version>1.7.30</slf4j.version>
-    <lombook.version>1.18.20</lombook.version>
-    <hutool.version>5.6.7</hutool.version>
+    <slf4j.version>1.7.36</slf4j.version>
+    <lombook.version>1.18.24</lombook.version>
+    <hutool.version>5.8.3</hutool.version>
+    <commons-io.version>2.11.0</commons-io.version>
+    <commons-codec.version>1.15</commons-codec.version>
     <commons-lang3.version>3.11</commons-lang3.version>
+    <commons-compress.version>1.21</commons-compress.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <jna.version>5.2.0</jna.version>
-    <spring.version>5.3.6</spring.version>
-    <spring-boot.version>2.4.5</spring-boot.version>
+    <spring.version>5.3.14</spring.version>
+    <spring-boot.version>2.7.1</spring-boot.version>
+    <jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
   </properties>
 
   <modules>
-    <module>coca-core</module>
+    <module>coca-common</module>
     <module>coca-native</module>
     <module>coca-bom</module>
   </modules>
 
   <dependencies>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-configuration-processor</artifactId>
-      <version>${spring-boot.version}</version>
-      <optional>true</optional>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -120,7 +117,7 @@
     <dependencies>
       <dependency>
         <groupId>com.power4j.kit</groupId>
-        <artifactId>coca-core</artifactId>
+        <artifactId>coca-common</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
@@ -132,6 +129,21 @@
         <groupId>cn.hutool</groupId>
         <artifactId>hutool-all</artifactId>
         <version>${hutool.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commons-compress.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${commons-codec.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -157,6 +169,11 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
         <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${jetbrains-annotations.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

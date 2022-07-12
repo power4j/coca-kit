@@ -16,9 +16,10 @@
 
 package com.power4j.coca.kit.common.io.buffer;
 
-import cn.hutool.core.codec.Base64;
-import cn.hutool.core.util.HexUtil;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 
 import java.nio.ByteBuffer;
 
@@ -104,9 +105,15 @@ public class BufferKit {
 	 * 从HEX字符串创建
 	 * @param hexStr
 	 * @return ByteBuffer
+	 * @throws IllegalArgumentException 输入的字符串不是HEX编码
 	 */
 	public ByteBuffer fromHex(String hexStr) {
-		return wrap(HexUtil.decodeHex(hexStr));
+		try {
+			return wrap(Hex.decodeHex(hexStr));
+		}
+		catch (DecoderException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	/**
@@ -115,7 +122,7 @@ public class BufferKit {
 	 * @return ByteBuffer
 	 */
 	public ByteBuffer fromBase64(String base64Str) {
-		return wrap(Base64.decode(base64Str));
+		return wrap(Base64.decodeBase64(base64Str));
 	}
 
 }

@@ -16,7 +16,7 @@
 
 package com.power4j.coca.kit.common.io.buffer;
 
-import cn.hutool.core.util.HexUtil;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.lang.Nullable;
 
 import java.nio.BufferUnderflowException;
@@ -175,7 +175,7 @@ public class ByteBufferReader extends AbstractBufferAccess
 	public String dumpHex() {
 		int size = readableBytes();
 		if (size > 0) {
-			return HexUtil.encodeHexStr(readBytes(size));
+			return Hex.encodeHexString(readBytes(size));
 		}
 		return "";
 	}

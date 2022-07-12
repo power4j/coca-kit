@@ -16,10 +16,9 @@
 
 package com.power4j.coca.kit.common.io.codec.impl;
 
-import cn.hutool.core.exceptions.UtilException;
-import cn.hutool.core.util.ZipUtil;
 import com.power4j.coca.kit.common.io.codec.Codec;
 import com.power4j.coca.kit.common.io.codec.CodecException;
+import org.apache.commons.codec.binary.Base64;
 
 import java.nio.ByteBuffer;
 
@@ -28,9 +27,9 @@ import java.nio.ByteBuffer;
  * @date 2021/10/25
  * @since 1.0
  */
-public class BufferGz implements Codec<ByteBuffer, ByteBuffer> {
+public class Base64Codec implements Codec<ByteBuffer, String> {
 
-	public final static String NAME = "gz";
+	public final static String NAME = "b64";
 
 	@Override
 	public String name() {
@@ -38,25 +37,14 @@ public class BufferGz implements Codec<ByteBuffer, ByteBuffer> {
 	}
 
 	@Override
-	public ByteBuffer decode(ByteBuffer src) throws CodecException {
-		try {
-			byte[] data = ZipUtil.unGzip(src.array());
-			return ByteBuffer.wrap(data);
-		}
-		catch (UtilException e) {
-			throw new CodecException(e.getMessage(), e);
-		}
+	public ByteBuffer decode(String src) throws CodecException {
+		byte[] raw = Base64.decodeBase64(src);
+		return ByteBuffer.wrap(raw);
 	}
 
 	@Override
-	public ByteBuffer encode(ByteBuffer src) throws CodecException {
-		try {
-			byte[] data = ZipUtil.gzip(src.array());
-			return ByteBuffer.wrap(data);
-		}
-		catch (UtilException e) {
-			throw new CodecException(e.getMessage(), e);
-		}
+	public String encode(ByteBuffer src) throws CodecException {
+		return Base64.encodeBase64String(src.array());
 	}
 
 }

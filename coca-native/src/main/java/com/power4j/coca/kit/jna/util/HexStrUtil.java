@@ -16,8 +16,8 @@
 
 package com.power4j.coca.kit.jna.util;
 
-import cn.hutool.core.util.HexUtil;
-import cn.hutool.core.util.StrUtil;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author cj
@@ -29,7 +29,7 @@ public class HexStrUtil {
 	public static final char CHAR_ZERO = '0';
 
 	public static String encodeHex(byte[] bytes) {
-		return HexUtil.encodeHexStr(bytes).toUpperCase();
+		return Hex.encodeHexString(bytes).toUpperCase();
 	}
 
 	public static boolean isHexString(CharSequence hexCharSequence) {
@@ -93,7 +93,7 @@ public class HexStrUtil {
 	 * @return
 	 */
 	public static String dumpInt8(int val) {
-		return StrUtil.padPre(Integer.toHexString(val & 0xFF), Byte.BYTES * 2, CHAR_ZERO);
+		return StringUtils.leftPad(Integer.toHexString(val & 0xFF), Byte.BYTES * 2, CHAR_ZERO);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class HexStrUtil {
 	 * @return
 	 */
 	public static String dumpInt16(int val) {
-		return StrUtil.padPre(Integer.toHexString(val & 0xFFFF), Short.BYTES * 2, CHAR_ZERO);
+		return StringUtils.leftPad(Integer.toHexString(val & 0xFFFF), Short.BYTES * 2, CHAR_ZERO);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class HexStrUtil {
 	 * @return
 	 */
 	public static String dumpInt32(int val) {
-		return StrUtil.padPre(Integer.toHexString(val), Integer.BYTES * 2, CHAR_ZERO);
+		return StringUtils.leftPad(Integer.toHexString(val), Integer.BYTES * 2, CHAR_ZERO);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class HexStrUtil {
 	 * @return
 	 */
 	public static String dumpInt64(long val) {
-		return StrUtil.padPre(Long.toHexString(val), Long.BYTES * 2, CHAR_ZERO);
+		return StringUtils.leftPad(Long.toHexString(val), Long.BYTES * 2, CHAR_ZERO);
 	}
 
 }

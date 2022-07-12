@@ -16,8 +16,6 @@
 
 package com.power4j.coca.kit.common.text.obscure;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.text.CharSequenceUtil;
 import com.power4j.coca.kit.common.io.codec.Codec;
 import com.power4j.coca.kit.common.io.codec.CodecException;
 import com.power4j.coca.kit.common.io.codec.Decoder;
@@ -25,6 +23,7 @@ import com.power4j.coca.kit.common.io.codec.Encoder;
 import com.power4j.coca.kit.common.io.codec.impl.Base64Codec;
 import com.power4j.coca.kit.common.lang.Pair;
 import com.power4j.coca.kit.common.text.StringPool;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 
 import java.nio.ByteBuffer;
@@ -37,6 +36,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author CJ (power4j@outlook.com)
@@ -138,7 +138,8 @@ public class StrObscurer {
 	}
 
 	protected ByteBuffer restoreData(List<String> flags, ByteBuffer buffer) throws CodecException {
-		flags = CollectionUtil.reverseNew(flags);
+		flags = new ArrayList<>(flags);
+		Collections.reverse(flags);
 		for (String name : flags) {
 			Decoder<ByteBuffer, ByteBuffer> decoder = codecRegistry.get(name);
 			if (Objects.isNull(decoder)) {
@@ -154,7 +155,7 @@ public class StrObscurer {
 	}
 
 	String extractFlag(String value) {
-		return CharSequenceUtil.removePrefix(value, flagPrefix);
+		return StringUtils.removeStart(value, flagPrefix);
 	}
 
 	String buildHeader(@Nullable List<? extends Encoder<?, ?>> encoders) {
@@ -167,13 +168,13 @@ public class StrObscurer {
 
 	Pair<List<String>, String> parseFlagAndBody(String input) {
 		final int piece = 2;
-		List<String> flagAndBody = CharSequenceUtil.splitTrim(input, BODY_SEPARATOR, piece);
-		if (flagAndBody.size() >= piece) {
-			List<String> flags = CharSequenceUtil.splitTrim(flagAndBody.get(0), FLAG_SEPARATOR).stream()
-					.map(this::extractFlag).collect(Collectors.toList());
-			return Pair.of(flags, flagAndBody.get(1));
+		String[] flagAndBody = StringUtils.split(input, BODY_SEPARATOR, piece);
+		if (flagAndBody.length >= piece) {
+			List<String> flags = Stream.of(StringUtils.split(flagAndBody[0], FLAG_SEPARATOR)).map(this::extractFlag)
+					.collect(Collectors.toList());
+			return Pair.of(flags, flagAndBody[1]);
 		}
-		return Pair.of(Collections.emptyList(), flagAndBody.get(0));
+		return Pair.of(Collections.emptyList(), flagAndBody[0]);
 	}
 
 }

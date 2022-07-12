@@ -16,8 +16,8 @@
 
 package com.power4j.coca.kit.jna.util;
 
-import cn.hutool.core.util.HexUtil;
-import cn.hutool.core.util.RandomUtil;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Random;
 
 /**
  * @author cj
@@ -79,7 +80,9 @@ public class ByteData {
 	 * @return BinData
 	 */
 	public static ByteData random(int size) {
-		return ByteData.fromBytes(RandomUtil.randomBytes(size));
+		byte[] bytes = new byte[size];
+		new Random().nextBytes(bytes);
+		return ByteData.fromBytes(bytes);
 	}
 
 	/**
@@ -163,7 +166,12 @@ public class ByteData {
 	 * @throws IllegalArgumentException hexString不是16进制字符串
 	 */
 	public static ByteData formHex(String hexString) {
-		return new ByteData(HexUtil.decodeHex(hexString.toCharArray()));
+		try {
+			return new ByteData(Hex.decodeHex(hexString));
+		}
+		catch (DecoderException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	/**

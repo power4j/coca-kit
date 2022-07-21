@@ -75,6 +75,8 @@
     <slf4j.version>1.7.36</slf4j.version>
     <lombook.version>1.18.24</lombook.version>
     <hutool.version>5.8.3</hutool.version>
+    <netty.version>4.1.79.Final</netty.version>
+    <reactor-netty.version>1.0.21</reactor-netty.version>
     <commons-io.version>2.11.0</commons-io.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-lang3.version>3.11</commons-lang3.version>
@@ -126,9 +128,9 @@
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>cn.hutool</groupId>
-        <artifactId>hutool-all</artifactId>
-        <version>${hutool.version}</version>
+        <groupId>com.power4j.kit</groupId>
+        <artifactId>coca-bep</artifactId>
+        <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -171,9 +173,14 @@
         <version>${spring.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.jetbrains</groupId>
-        <artifactId>annotations</artifactId>
-        <version>${jetbrains-annotations.version}</version>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-buffer</artifactId>
+        <version>${netty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.projectreactor.netty</groupId>
+        <artifactId>reactor-netty</artifactId>
+        <version>${reactor-netty.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

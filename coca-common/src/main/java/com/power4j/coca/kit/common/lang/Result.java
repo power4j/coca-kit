@@ -21,6 +21,7 @@ import lombok.Data;
 import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -62,6 +63,10 @@ public class Result<T> implements Serializable {
 	 */
 	@Nullable
 	private Map<String, Object> metaInfo;
+
+	public static Builder ofCode(String code) {
+		return new Builder(code);
+	}
 
 	public static <T> Result<T> create(String code, @Nullable String message, @Nullable T data,
 			@Nullable Map<String, Object> metaInfo) {
@@ -153,6 +158,51 @@ public class Result<T> implements Serializable {
 
 	public String simpleDescribe() {
 		return "code = " + code + ",msg = " + message;
+	}
+
+	public static class Builder {
+
+		private final String code;
+
+		@Nullable
+		private String message;
+
+		@Nullable
+		private Map<String, Object> metaInfo;
+
+		public Builder(String code) {
+			this.code = Objects.requireNonNull(code);
+		}
+
+		public Builder message(@Nullable String message) {
+			this.message = message;
+			return this;
+		}
+
+		public Builder pushMeta(String key, Object value) {
+			useMeta().put(key, value);
+			return this;
+		}
+
+		public Builder pushMeta(@Nullable Map<String, Object> map) {
+			if (map == null) {
+				return this;
+			}
+			useMeta().putAll(map);
+			return this;
+		}
+
+		public <T> Result<T> build(@Nullable T data) {
+			return Result.create(code, message, data, metaInfo);
+		}
+
+		protected Map<String, Object> useMeta() {
+			if (metaInfo == null) {
+				metaInfo = new HashMap<>(4);
+			}
+			return metaInfo;
+		}
+
 	}
 
 }

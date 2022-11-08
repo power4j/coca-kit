@@ -76,7 +76,7 @@
     <lombook.version>1.18.24</lombook.version>
     <hutool.version>5.8.3</hutool.version>
     <netty.version>4.1.79.Final</netty.version>
-    <reactor-netty.version>1.0.21</reactor-netty.version>
+    <reactor-netty.version>1.1.0</reactor-netty.version>
     <commons-io.version>2.11.0</commons-io.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-lang3.version>3.11</commons-lang3.version>

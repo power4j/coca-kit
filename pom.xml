@@ -128,11 +128,6 @@
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>com.power4j.kit</groupId>
-        <artifactId>coca-bep</artifactId>
-        <version>${revision}</version>
-      </dependency>
-      <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io.version}</version>

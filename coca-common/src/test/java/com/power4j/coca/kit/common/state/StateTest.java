@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.power4j.coca.kit.common.util;
+package com.power4j.coca.kit.common.state;
 
+import com.power4j.coca.kit.common.state.State;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

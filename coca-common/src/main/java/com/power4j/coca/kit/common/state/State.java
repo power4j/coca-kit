@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.power4j.coca.kit.common.util;
+package com.power4j.coca.kit.common.state;
 
 import org.springframework.lang.Nullable;
 

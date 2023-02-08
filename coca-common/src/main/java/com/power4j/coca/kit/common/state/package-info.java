@@ -21,7 +21,7 @@
  */
 @NonNullApi
 @NonNullFields
-package com.power4j.coca.kit.common.model;
+package com.power4j.coca.kit.common.state;
 
 import org.springframework.lang.NonNullApi;
 import org.springframework.lang.NonNullFields;

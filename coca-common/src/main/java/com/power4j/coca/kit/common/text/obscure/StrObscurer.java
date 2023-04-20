@@ -170,8 +170,9 @@ public class StrObscurer {
 		final int piece = 2;
 		String[] flagAndBody = StringUtils.split(input, BODY_SEPARATOR, piece);
 		if (flagAndBody.length >= piece) {
-			List<String> flags = Stream.of(StringUtils.split(flagAndBody[0], FLAG_SEPARATOR)).map(this::extractFlag)
-					.collect(Collectors.toList());
+			List<String> flags = Stream.of(StringUtils.split(flagAndBody[0], FLAG_SEPARATOR))
+				.map(this::extractFlag)
+				.collect(Collectors.toList());
 			return Pair.of(flags, flagAndBody[1]);
 		}
 		return Pair.of(Collections.emptyList(), flagAndBody[0]);

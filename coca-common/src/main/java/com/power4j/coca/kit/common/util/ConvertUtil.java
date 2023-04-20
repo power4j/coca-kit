@@ -70,7 +70,7 @@ public class ConvertUtil {
 	public <S, K, V> Map<K, V> toMap(Iterable<S> source, Function<? super S, ? extends K> keyExtractor,
 			Function<? super S, ? extends V> valueExtractor) {
 		return StreamSupport.stream(source.spliterator(), false)
-				.collect(Collectors.toMap(keyExtractor, valueExtractor));
+			.collect(Collectors.toMap(keyExtractor, valueExtractor));
 	}
 
 }

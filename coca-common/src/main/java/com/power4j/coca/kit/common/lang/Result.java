@@ -17,6 +17,8 @@
 package com.power4j.coca.kit.common.lang;
 
 import com.power4j.coca.kit.common.exception.AssertionFailException;
+import com.power4j.coca.kit.common.state.IntErr;
+import com.power4j.coca.kit.common.state.StrErr;
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
@@ -80,6 +82,14 @@ public class Result<T> implements Serializable {
 
 	public static <T> Result<T> create(String code, @Nullable String message, @Nullable T data) {
 		return create(code, message, data, null);
+	}
+
+	public static <T> Result<T> fromError(StrErr err) {
+		return create(err.getCode(), err.getMessage(), null);
+	}
+
+	public static <T> Result<T> fromError(IntErr err) {
+		return create(String.valueOf(err.getCode()), err.getMessage(), null);
 	}
 
 	public boolean codeEquals(@Nullable String expected, boolean caseSensitive) {

@@ -19,7 +19,9 @@ package com.power4j.coca.kit.common.datetime;
 import lombok.experimental.UtilityClass;
 import org.springframework.lang.Nullable;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -44,6 +46,22 @@ public class DateTimeKit {
 
 	// ~ Converter
 	// ===================================================================================================
+
+	@Nullable
+	LocalDateTime startDateTime(@Nullable LocalDate date) {
+		if (date == null) {
+			return null;
+		}
+		return LocalDateTime.of(date, LocalTime.of(0, 0, 0));
+	}
+
+	@Nullable
+	LocalDateTime endDateTime(@Nullable LocalDate date) {
+		if (date == null) {
+			return null;
+		}
+		return LocalDateTime.of(date, LocalTime.of(23, 59, 59));
+	}
 
 	@Nullable
 	public Date toDate(@Nullable LocalDateTime localDateTime) {

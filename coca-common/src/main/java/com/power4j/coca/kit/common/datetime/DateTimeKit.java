@@ -48,7 +48,7 @@ public class DateTimeKit {
 	// ===================================================================================================
 
 	@Nullable
-	LocalDateTime startDateTime(@Nullable LocalDate date) {
+	public LocalDateTime startDateTime(@Nullable LocalDate date) {
 		if (date == null) {
 			return null;
 		}
@@ -56,7 +56,7 @@ public class DateTimeKit {
 	}
 
 	@Nullable
-	LocalDateTime endDateTime(@Nullable LocalDate date) {
+	public LocalDateTime endDateTime(@Nullable LocalDate date) {
 		if (date == null) {
 			return null;
 		}

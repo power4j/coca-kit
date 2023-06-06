@@ -75,7 +75,8 @@ class StrObscurerTest {
 	public void testObscurerWithSelector() throws CodecException {
 		String text = "1234567890A";
 		StrObscurer.EncoderSelector selector = (s, l) -> l.stream()
-				.filter(enc -> enc.name().equals(BufferGz.NAME) && s.length() > 10).collect(Collectors.toList());
+			.filter(enc -> enc.name().equals(BufferGz.NAME) && s.length() > 10)
+			.collect(Collectors.toList());
 		StrObscurer obscurer = StrObscurer.ofEncoders(Arrays.asList(new BufferGz(), new AppendX()));
 		obscurer.setFlagPrefix(StringPool.EMPTY);
 		System.out.println("encode :");

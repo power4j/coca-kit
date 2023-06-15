@@ -27,6 +27,8 @@ import java.util.function.Supplier;
 /**
  * 工具类,处理返回值和错误传播
  * <p>
+ * 用法参考 <a href='https://doc.rust-lang.org/std/result/' >Rust std::result</a> 或者
+ * <a href='https://github.com/antitypical/Result' > antitypical/Result</a>
  *
  * @author CJ (power4j@outlook.com)
  * @since 2022.1

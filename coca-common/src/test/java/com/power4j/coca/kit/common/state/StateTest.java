@@ -16,10 +16,10 @@
 
 package com.power4j.coca.kit.common.state;
 
-import com.power4j.coca.kit.common.state.State;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -40,6 +40,7 @@ class StateTest {
 		Assertions.assertFalse(state.isOk());
 
 		state = new State<>(null, null);
+		System.out.println(state.display());
 		Assertions.assertFalse(state.isError());
 		Assertions.assertTrue(state.isOk());
 	}
@@ -194,6 +195,28 @@ class StateTest {
 		Assertions.assertEquals(1, State.flatten(State.ok(State.ok(1))).unwrap());
 
 		Assertions.assertEquals("xx", State.flatten(State.error("xx")).unwrapError());
+	}
+
+	@Test
+	void displayTest() {
+
+		State<?, ?> state1 = State.error("failed");
+		Assertions.assertEquals("Error(failed)", state1.display());
+
+		state1 = State.error(-1);
+		Assertions.assertEquals("Error(-1)", state1.display());
+
+		state1 = State.ok(-1);
+		Assertions.assertEquals("Ok", state1.display());
+
+		state1 = State.ok(null);
+		Assertions.assertEquals("Ok(null)", state1.display());
+
+		state1 = State.ok(Optional.empty());
+		Assertions.assertEquals("Ok(wrapped null)", state1.display());
+
+		state1 = State.ok(Optional.of(1));
+		Assertions.assertEquals("Ok", state1.display());
 	}
 
 }

@@ -14,33 +14,20 @@
  * limitations under the License.
  */
 
-package com.power4j.coca.kit.common.state;
-
-import org.springframework.lang.Nullable;
-
-import java.util.Objects;
+package com.power4j.coca.kit.common.text;
 
 /**
  * @author CJ (power4j@outlook.com)
  * @since 1.0
  */
-public class StrErr extends BaseErr<String> {
+public interface Display {
 
-	public StrErr(String code, @Nullable String message) {
-		super(Objects.requireNonNull(code), message);
-	}
-
-	public static StrErr of(String code, @Nullable String message) {
-		return new StrErr(code, message);
-	}
-
-	public static <T extends Comparable<T>> StrErr of(Err<T> err) {
-		return StrErr.of(err.getCode().toString(), err.getMessage());
-	}
-
-	@Override
-	public String display() {
-		return "[" + getCode() + "] - " + getMessage();
+	/**
+	 * Human readable content
+	 * @return String for display
+	 */
+	default String display() {
+		return toString();
 	}
 
 }

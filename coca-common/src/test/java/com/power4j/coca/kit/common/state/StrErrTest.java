@@ -16,31 +16,24 @@
 
 package com.power4j.coca.kit.common.state;
 
-import org.springframework.lang.Nullable;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author CJ (power4j@outlook.com)
  * @since 1.0
  */
-public class StrErr extends BaseErr<String> {
+class StrErrTest {
 
-	public StrErr(String code, @Nullable String message) {
-		super(Objects.requireNonNull(code), message);
-	}
+	@Test
+	void display() {
+		StrErr err = StrErr.of("E100", null);
+		Assertions.assertEquals("[E100] - ok", err.display());
 
-	public static StrErr of(String code, @Nullable String message) {
-		return new StrErr(code, message);
-	}
-
-	public static <T extends Comparable<T>> StrErr of(Err<T> err) {
-		return StrErr.of(err.getCode().toString(), err.getMessage());
-	}
-
-	@Override
-	public String display() {
-		return "[" + getCode() + "] - " + getMessage();
+		err = StrErr.of("E100", "fail");
+		Assertions.assertEquals("[E100] - fail", err.display());
 	}
 
 }

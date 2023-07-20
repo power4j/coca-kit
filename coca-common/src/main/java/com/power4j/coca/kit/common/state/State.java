@@ -16,6 +16,7 @@
 
 package com.power4j.coca.kit.common.state;
 
+import com.power4j.coca.kit.common.text.Display;
 import org.springframework.lang.Nullable;
 
 import java.util.Objects;
@@ -35,7 +36,7 @@ import java.util.function.Supplier;
  * @param <T> 返回值类型
  * @param <E> 错误类型
  */
-public final class State<T, E> {
+public final class State<T, E> implements Display {
 
 	@Nullable
 	private final T value;
@@ -312,6 +313,22 @@ public final class State<T, E> {
 	 */
 	public static <T, E> State<T, E> flatten(State<? extends State<T, E>, E> state) {
 		return state.map(State::unwrap);
+	}
+
+	@Override
+	public String display() {
+		if (isOk()) {
+			if (value == null) {
+				return "Ok(null)";
+			}
+			else {
+				if (value instanceof Optional && !((Optional<?>) value).isPresent()) {
+					return "Ok(wrapped null)";
+				}
+				return "Ok";
+			}
+		}
+		return "Error(" + error + ")";
 	}
 
 }

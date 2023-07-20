@@ -29,7 +29,13 @@ public class IntErr extends BaseErr<Integer> {
 	}
 
 	public static IntErr of(int code, @Nullable String message) {
-		return new IntErr(code, message == null ? "ok" : message);
+		return new IntErr(code, message);
+	}
+
+	@Override
+	public String display() {
+		final String msg = getMessage();
+		return String.format("[%d(0x%X)]", msg, msg) + " - " + getMessage();
 	}
 
 }

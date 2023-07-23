@@ -39,13 +39,15 @@ public class ByteData {
 
 	private byte[] buffer;
 
+	private int writeIndex = 0;
+
 	/**
 	 * PKCS7 打包,可能会内部导致数据发生改变
 	 * @param blockSize 块大小
 	 * @return 返回新的BinData
 	 */
 	public static ByteData packPkcs7Block(ByteData byteData, final int blockSize) {
-		return ByteData.fromBytes(Pkcs7Padding.padding(byteData.buffer, blockSize));
+		return ByteData.fromBytes(Pkcs7Padding.padding(byteData.buffer, 0, writeIndex, blockSize));
 	}
 
 	/**
@@ -209,7 +211,7 @@ public class ByteData {
 		if (maxSize < 0) {
 			maxSize = buffer.length;
 		}
-		return Arrays.copyOfRange(buffer, 0, Math.min(buffer.length, maxSize));
+		return Arrays.copyOfRange(buffer, 0, Math.min(writeIndex, maxSize));
 	}
 
 	public String getAsString(int offset, int length, Charset charset) {
@@ -218,10 +220,6 @@ public class ByteData {
 
 	public String getAsUtf8String(int offset, int length) {
 		return getAsString(offset, length, StandardCharsets.UTF_8);
-	}
-
-	public void setData(byte[] data) {
-		this.buffer = data;
 	}
 
 	public String toHex() {

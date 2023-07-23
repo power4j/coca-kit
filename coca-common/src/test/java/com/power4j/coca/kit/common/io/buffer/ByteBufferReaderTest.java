@@ -20,10 +20,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.nio.ByteOrder;
-import java.nio.ReadOnlyBufferException;
 import java.nio.charset.StandardCharsets;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author CJ (power4j@outlook.com)
@@ -76,7 +73,7 @@ class ByteBufferReaderTest {
 	}
 
 	@Test
-	void readNextShort() {
+	void readShort() {
 		byte[] data = { (byte) 1, (byte) 2, (byte) 3, (byte) 4 };
 		ByteBufferReader reader = ByteBufferReader.of(BufferKit.wrap(data));
 		short val = reader.readShort();
@@ -85,7 +82,7 @@ class ByteBufferReaderTest {
 	}
 
 	@Test
-	void readNextInt() {
+	void readInt() {
 		byte[] data = { (byte) 1, (byte) 2, (byte) 3, (byte) 4 };
 		ByteBufferReader reader = ByteBufferReader.of(BufferKit.wrap(data));
 		int val = reader.readInt();
@@ -93,7 +90,7 @@ class ByteBufferReaderTest {
 	}
 
 	@Test
-	void readNextLong() {
+	void readLong() {
 		byte[] data = { (byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 1, (byte) 2, (byte) 3, (byte) 4 };
 		ByteBufferReader reader = ByteBufferReader.of(BufferKit.wrap(data));
 		long val = reader.readLong();
@@ -101,7 +98,7 @@ class ByteBufferReaderTest {
 	}
 
 	@Test
-	void readNextFloat() {
+	void readFloat() {
 		// memory of float: 123.45
 		final byte[] f123_45 = { (byte) 0x42, (byte) 0xF6, (byte) 0xE6, (byte) 0x66 };
 		float val = ByteBufferReader.of(BufferKit.wrap(f123_45)).readFloat();
@@ -109,7 +106,7 @@ class ByteBufferReaderTest {
 	}
 
 	@Test
-	void readNextDouble() {
+	void readDouble() {
 		// memory of double: 123.45
 		final byte[] d123_45 = { (byte) 0x40, (byte) 0x5E, (byte) 0xDC, (byte) 0xCC, (byte) 0xCC, (byte) 0xCC,
 				(byte) 0xCC, (byte) 0xCD };
@@ -118,16 +115,52 @@ class ByteBufferReaderTest {
 	}
 
 	@Test
-	void readNextBytesAsString() {
-		// C String : "123\0" , ISO_8859_1 encode
-		final byte[] str_123 = { (byte) 0x31, (byte) 0x32, (byte) 0x33, (byte) 0x00, (byte) 0xCC, (byte) 0xCC,
-				(byte) 0xCC, (byte) 0xCC };
-		String val = ByteBufferReader.of(BufferKit.wrap(str_123)).readAsString(8, StandardCharsets.ISO_8859_1);
-		Assertions.assertArrayEquals(str_123, val.getBytes(StandardCharsets.ISO_8859_1));
+	void readUnsigned() {
+		byte[] u8Max = new byte[] { (byte) 0xFF };
+		byte[] u16Max = new byte[] { (byte) 0xFF, (byte) 0xFF };
+		byte[] u32Max = new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
+		byte[] u64Max = new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+				(byte) 0xFF, (byte) 0xFF };
+		Assertions.assertEquals(255, ByteBufferReader.of(BufferKit.wrap(u8Max)).readU8());
+		Assertions.assertEquals(65535, ByteBufferReader.of(BufferKit.wrap(u16Max)).readU16());
+		Assertions.assertEquals(4_294_967_295L, ByteBufferReader.of(BufferKit.wrap(u32Max)).readU32());
+		Assertions.assertEquals("18446744073709551615",
+				ByteBufferReader.of(BufferKit.wrap(u64Max)).readU64().toString());
 	}
 
 	@Test
-	void readNextString() {
+	void readString() {
+		// C String : "123\0" , ISO_8859_1 encode
+		final byte[] str_123 = { (byte) 0x31, (byte) 0x32, (byte) 0x33, (byte) 0x00, (byte) 0xCC, (byte) 0xCC,
+				(byte) 0xCC, (byte) 0xCC };
+		String val = ByteBufferReader.of(BufferKit.wrap(str_123)).readString(8, StandardCharsets.ISO_8859_1, false);
+		Assertions.assertEquals(str_123.length, val.length());
+		Assertions.assertArrayEquals(str_123, val.getBytes(StandardCharsets.ISO_8859_1));
+
+		val = ByteBufferReader.of(BufferKit.wrap(str_123)).readString(8, StandardCharsets.ISO_8859_1, true);
+		Assertions.assertEquals("123", val);
+
+		val = ByteBufferReader.of(BufferKit.wrap(str_123)).readString(8);
+		Assertions.assertEquals("123", val);
+	}
+
+	@Test
+	void readUnicodeString() {
+		// C String : "aA\0" , unicode
+		final byte[] str_a = { (byte) 0x00, (byte) 0x61, (byte) 0x00, (byte) 0x41, (byte) 0x00, (byte) 0x00,
+				(byte) 0xCC, (byte) 0xCC };
+
+		String val = ByteBufferReader.of(BufferKit.wrap(str_a))
+			.readUnicodeString(str_a.length, StandardCharsets.UTF_16BE, false);
+		Assertions.assertEquals(4, val.length());
+
+		val = ByteBufferReader.of(BufferKit.wrap(str_a))
+			.readUnicodeString(str_a.length, StandardCharsets.UTF_16BE, true);
+		Assertions.assertEquals(2, val.length());
+	}
+
+	@Test
+	void readNullTerminatedString() {
 		// C String : "123\0" , ISO_8859_1 encode
 		final byte[] str_123 = { (byte) 0x31, (byte) 0x32, (byte) 0x33, (byte) 0x00, (byte) 0xCC, (byte) 0xCC,
 				(byte) 0xCC, (byte) 0xCC };
@@ -200,6 +233,8 @@ class ByteBufferReaderTest {
 
 		reader.unread(100);
 		Assertions.assertEquals(4, reader.readableBytes());
+
+		Assertions.assertEquals(3, reader.unreadAll().skip(1).readableBytes());
 	}
 
 	@Test
@@ -216,15 +251,6 @@ class ByteBufferReaderTest {
 		Assertions.assertEquals(0, reader.readableBytes());
 		reader.skip(1);
 		Assertions.assertEquals(0, reader.readableBytes());
-	}
-
-	@Test
-	void expand() {
-		byte[] data = new byte[1];
-		ByteBufferReader reader = ByteBufferReader.of(BufferKit.wrap(data));
-		assertThrows(ReadOnlyBufferException.class, () -> {
-			reader.expand(1);
-		});
 	}
 
 	@Test

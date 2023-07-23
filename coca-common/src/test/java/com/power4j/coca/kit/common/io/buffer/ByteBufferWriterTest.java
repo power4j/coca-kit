@@ -129,21 +129,24 @@ class ByteBufferWriterTest {
 	@Test
 	void writeString() {
 		ByteBufferWriter writer = ByteBufferWriter.of(BufferKit.allocate(4));
-		writer.writeString("123", StandardCharsets.UTF_8, 0, (byte) 0);
+		writer.writeString("123", StandardCharsets.UTF_8, -1, (byte) 0);
 		Assertions.assertEquals(3, writer.hasWritten());
 		Assertions.assertEquals(1, writer.writeableBytes());
 
-		writer.discardAll();
-		Assertions.assertEquals(4, writer.writeableBytes());
-		writer.writeString("123", StandardCharsets.UTF_8, 0, (byte) 0);
-		Assertions.assertEquals(3, writer.hasWritten());
-		Assertions.assertEquals(1, writer.writeableBytes());
+		writer = ByteBufferWriter.of(BufferKit.allocate(4));
+		writer.writeString("123", StandardCharsets.UTF_8, 2, (byte) 0);
+		Assertions.assertEquals(2, writer.hasWritten());
+
+		writer = ByteBufferWriter.of(BufferKit.allocate(4));
+		writer.writeString("123", StandardCharsets.UTF_8, 4, (byte) 0);
+		Assertions.assertEquals(4, writer.hasWritten());
+		Assertions.assertEquals(0, writer.peekAt(3));
 	}
 
 	@Test
 	void writeFixedString() {
 		ByteBufferWriter writer = ByteBufferWriter.of(BufferKit.allocate(4));
-		writer.writeString("12", StandardCharsets.UTF_8, 4, (byte) 0);
+		writer.writeFixedString("12", 4);
 		Assertions.assertEquals(4, writer.hasWritten());
 		Assertions.assertEquals(0, writer.writeableBytes());
 	}
@@ -192,7 +195,7 @@ class ByteBufferWriterTest {
 		final byte[] src = { (byte) 1, (byte) 2, (byte) 3, (byte) 4 };
 		final byte val1 = (byte) 0x10;
 		final byte val2 = (byte) 0x20;
-		ByteBufferWriter writer = ByteBufferWriter.of(BufferKit.wrap(src));
+		ByteBufferWriter writer = ByteBufferWriter.of(src);
 		writer.writeByte(val1);
 		writer.writeByte(val2);
 		Assertions.assertEquals(val1, src[0]);

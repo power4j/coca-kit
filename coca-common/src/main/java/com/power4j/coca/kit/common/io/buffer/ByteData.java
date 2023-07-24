@@ -621,6 +621,15 @@ public class ByteData implements Display {
 	}
 
 	/**
+	 * 将可写区域委托给 {@code ByteBufferWriter},使用本机字节序,注意:写入操作不会同步内部写指针
+	 * @return ByteBufferWriter
+	 * @see ByteBufferWriter
+	 */
+	public ByteBufferWriter bufferWriter() {
+		return bufferWriter(ByteOrder.nativeOrder());
+	}
+
+	/**
 	 * 将可读区域委托给 {@code ByteBufferReader}
 	 * @param order 字节序
 	 * @return ByteBufferReader
@@ -628,6 +637,15 @@ public class ByteData implements Display {
 	 */
 	public ByteBufferReader bufferReader(ByteOrder order) {
 		return ByteBufferReader.of(ByteBuffer.wrap(buffer, 0, readableBytes()), order);
+	}
+
+	/**
+	 * 将可读区域委托给 {@code ByteBufferReader},使用本机字节序
+	 * @return ByteBufferReader
+	 * @see ByteBufferReader
+	 */
+	public ByteBufferReader bufferReader() {
+		return bufferReader(ByteOrder.nativeOrder());
 	}
 
 	@Override

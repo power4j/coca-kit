@@ -31,6 +31,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.power4j.kit</groupId>
+      <artifactId>coca-common</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>

@@ -21,20 +21,13 @@ import com.power4j.coca.kit.common.text.Display;
 /**
  * @author CJ (power4j@outlook.com)
  * @since 1.0
- * @param <T> 错误值
  */
-public interface Err<T extends Comparable<T>> extends Display {
+public interface ErrKind<K extends Comparable<K>, T extends Comparable<T>> extends Err<T>, Display {
 
 	/**
-	 * 错误代码
-	 * @return 错误代码值
+	 * Error kind
+	 * @return kind value
 	 */
-	T getCode();
-
-	/**
-	 * 错误描述
-	 * @return 错误信息字符串
-	 */
-	String getMessage();
+	K getKind();
 
 }

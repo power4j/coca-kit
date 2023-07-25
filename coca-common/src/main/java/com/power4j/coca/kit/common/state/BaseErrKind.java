@@ -16,25 +16,31 @@
 
 package com.power4j.coca.kit.common.state;
 
-import com.power4j.coca.kit.common.text.Display;
+import org.springframework.lang.Nullable;
+
+import java.util.Objects;
 
 /**
  * @author CJ (power4j@outlook.com)
  * @since 1.0
- * @param <T> 错误值
  */
-public interface Err<T extends Comparable<T>> extends Display {
+public class BaseErrKind<K extends Comparable<K>, T extends Comparable<T>> extends BaseErr<T> implements ErrKind<K, T> {
 
-	/**
-	 * 错误代码
-	 * @return 错误代码值
-	 */
-	T getCode();
+	private final K kind;
 
-	/**
-	 * 错误描述
-	 * @return 错误信息字符串
-	 */
-	String getMessage();
+	protected BaseErrKind(K kind, T code, @Nullable String message) {
+		super(code, message);
+		this.kind = Objects.requireNonNull(kind);
+	}
+
+	@Override
+	public K getKind() {
+		return kind;
+	}
+
+	@Override
+	public String display() {
+		return String.format("[%s] - %s", getKind(), super.display());
+	}
 
 }

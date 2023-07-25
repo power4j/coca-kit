@@ -16,7 +16,6 @@
 
 package com.power4j.coca.kit.common.state;
 
-import com.power4j.coca.kit.common.text.Display;
 import org.springframework.lang.Nullable;
 
 import java.util.Objects;
@@ -25,7 +24,7 @@ import java.util.Objects;
  * @author CJ (power4j@outlook.com)
  * @since 1.0
  */
-public class BaseErr<T extends Comparable<T>> implements Err<T>, Display {
+public class BaseErr<T extends Comparable<T>> implements Err<T> {
 
 	private final T code;
 

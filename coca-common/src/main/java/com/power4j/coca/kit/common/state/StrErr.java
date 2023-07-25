@@ -24,14 +24,18 @@ import java.util.Objects;
  * @author CJ (power4j@outlook.com)
  * @since 1.0
  */
-public class StrErr extends BaseErr<String> {
+public class StrErr extends BaseErrKind<Integer, String> {
 
-	public StrErr(String code, @Nullable String message) {
-		super(Objects.requireNonNull(code), message);
+	public StrErr(int kind, String code, @Nullable String message) {
+		super(kind, Objects.requireNonNull(code), message);
+	}
+
+	public static StrErr of(int kind, String code, @Nullable String message) {
+		return new StrErr(kind, code, message);
 	}
 
 	public static StrErr of(String code, @Nullable String message) {
-		return new StrErr(code, message);
+		return new StrErr(0, code, message);
 	}
 
 	public static <T extends Comparable<T>> StrErr of(Err<T> err) {
@@ -40,7 +44,7 @@ public class StrErr extends BaseErr<String> {
 
 	@Override
 	public String display() {
-		return "[" + getCode() + "] - " + getMessage();
+		return String.format("[kind %d,error %s] - %s", getKind(), getCode(), getMessage());
 	}
 
 }

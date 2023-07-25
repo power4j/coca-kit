@@ -19,8 +19,6 @@ package com.power4j.coca.kit.common.state;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * @author CJ (power4j@outlook.com)
  * @since 1.0
@@ -30,10 +28,13 @@ class IntErrTest {
 	@Test
 	void display() {
 		IntErr err = IntErr.of(0xF, null);
-		Assertions.assertEquals("[15(0xF)] - ok", err.display());
+		Assertions.assertEquals("[kind 0,error 15] - ok", err.display());
 
-		err = IntErr.of(0xF, "fail");
-		Assertions.assertEquals("[15(0xF)] - fail", err.display());
+		err = IntErr.of(0x1, "fail");
+		Assertions.assertEquals("[kind 0,error 1] - fail", err.display());
+
+		err = IntErr.of(-1, 0x1, "fail");
+		Assertions.assertEquals("[kind -1,error 1] - fail", err.display());
 	}
 
 }

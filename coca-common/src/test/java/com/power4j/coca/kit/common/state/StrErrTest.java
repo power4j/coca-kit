@@ -19,8 +19,6 @@ package com.power4j.coca.kit.common.state;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * @author CJ (power4j@outlook.com)
  * @since 1.0
@@ -29,11 +27,15 @@ class StrErrTest {
 
 	@Test
 	void display() {
+		// "[kind %d,error %s] - %s"
 		StrErr err = StrErr.of("E100", null);
-		Assertions.assertEquals("[E100] - ok", err.display());
+		Assertions.assertEquals("[kind 0,error E100] - ok", err.display());
 
 		err = StrErr.of("E100", "fail");
-		Assertions.assertEquals("[E100] - fail", err.display());
+		Assertions.assertEquals("[kind 0,error E100] - fail", err.display());
+
+		err = StrErr.of(-1, "E100", "fail");
+		Assertions.assertEquals("[kind -1,error E100] - fail", err.display());
 	}
 
 }

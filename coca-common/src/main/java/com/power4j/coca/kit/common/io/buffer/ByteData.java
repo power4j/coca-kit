@@ -30,10 +30,28 @@ import java.util.Base64;
 import java.util.Random;
 
 /**
- * container to store binary data
+ * Container to store byte data.
+ * <p/>
+ * <pre>
+ *     Buffer Layout
+ *     +-----------+-------------+
+ *     | readable  |  writeable  |
+ *     +-----------+-------------+
+ *                 ^             ^
+ *             writeIndex     capacity
+ * </pre>
+ * <ul>
+ * <li>This class provides various write methods like {@code writeU8()} to write data into
+ * a buffer. The buffer may need to be reallocated during writing to accommodate the
+ * data.</li>
+ * <li>To delegate writing to a {@code ByteBufferWriter}, use {@code bufferWriter()}. In
+ * this case, ensureWriteBytes() needs to be called beforehand to allocate enough space in
+ * the buffer.</li>
+ * <li>To delegate reading to a {@code ByteBufferWriter}, use {@code bufferReader()}.</li>
+ * </ul>
  *
  * @author cj
- * @date 2019/3/26
+ * @date 2023/7/21
  * @since 1.0
  */
 public class ByteData implements Display {
@@ -160,7 +178,7 @@ public class ByteData implements Display {
 		return new ByteData(bytes, bytes.length);
 	}
 
-	// ~ status control
+	// ~ buffer & index
 	// ===================================================================================================
 
 	/**

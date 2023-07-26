@@ -62,16 +62,29 @@ public class ByteData implements Display {
 
 	private int writeIndex;
 
+	/**
+	 * 无数据构造
+	 * @param capacity 初始容量
+	 */
 	protected ByteData(int capacity) {
-		buffer = capacity == 0 ? EMPTY_BUFFER : new byte[capacity];
-		writeIndex = 0;
+		this(capacity == 0 ? EMPTY_BUFFER : new byte[capacity], 0);
 	}
 
+	/**
+	 * 拷贝数据构造
+	 * @param src 源数据
+	 * @param offset 偏移量
+	 * @param length 拷贝长度,可以大于源数据长度,将进行默认填充
+	 */
 	protected ByteData(byte[] src, int offset, int length) {
-		buffer = Arrays.copyOfRange(src, offset, offset + length);
-		writeIndex = length;
+		this(Arrays.copyOfRange(src, offset, offset + length), length);
 	}
 
+	/**
+	 * 共享数据构造
+	 * @param buffer 初始buffer
+	 * @param writeIndex 初始写指针
+	 */
 	protected ByteData(byte[] buffer, int writeIndex) {
 		this.buffer = buffer;
 		this.writeIndex = writeIndex;
@@ -79,6 +92,15 @@ public class ByteData implements Display {
 
 	// ~ static method
 	// ===================================================================================================
+
+	/**
+	 * 创建BinData对象
+	 * @param original 源数据
+	 * @return 新的BinData对象,初始内部buffer指向源数据
+	 */
+	public static ByteData shardOf(byte[] original) {
+		return new ByteData(original, original.length);
+	}
 
 	/**
 	 * 创建BinData对象
@@ -99,22 +121,24 @@ public class ByteData implements Display {
 
 	/**
 	 * 创建BinData对象
-	 * @param bytes 源数据
+	 * @param original 源数据
 	 * @param offset 偏移量
-	 * @param length 长度
+	 * @param length 拷贝长度,可以大于源数据长度,将进行默认填充
 	 * @return 新的BinData对象,包含源数据的拷贝
+	 * @throws ArrayIndexOutOfBoundsException if {@code offset < 0}
+	 * @throws NullPointerException if {@code original} is null
 	 */
-	public static ByteData copyOf(byte[] bytes, int offset, int length) {
-		return new ByteData(bytes, offset, length);
+	public static ByteData copyOf(byte[] original, int offset, int length) {
+		return new ByteData(original, offset, length);
 	}
 
 	/**
 	 * 创建BinData对象
-	 * @param bytes 源数据
+	 * @param original 源数据
 	 * @return 新的BinData对象,包含源数据的拷贝
 	 */
-	public static ByteData copyOf(byte[] bytes) {
-		return copyOf(bytes, 0, bytes.length);
+	public static ByteData copyOf(byte[] original) {
+		return copyOf(original, 0, original.length);
 	}
 
 	/**
@@ -676,6 +700,17 @@ public class ByteData implements Display {
 	 */
 	public ByteBufferReader bufferReader() {
 		return bufferReader(ByteOrder.nativeOrder());
+	}
+
+	/**
+	 * 拷贝内部buffer的一部分创建新的ByteData
+	 * @param offset 起始偏移量
+	 * @param length 拷贝长度,可以大于源数据长度,将进行默认填充
+	 * @return 返回新的ByteData
+	 * @throws ArrayIndexOutOfBoundsException if {@code offset < 0}
+	 */
+	public ByteData buffCopy(int offset, int length) {
+		return ByteData.copyOf(buffer, offset, length);
 	}
 
 	@Override

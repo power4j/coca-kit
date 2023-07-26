@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.BufferOverflowException;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * @author CJ (power4j@outlook.com)
@@ -53,12 +54,14 @@ class ByteDataTest {
 		ByteData byteData = ByteData.shardOf(src);
 		Assertions.assertEquals(4, byteData.writeIndex());
 
-		// internal shard with original buffer
+		// internal buffer shard with original buffer
+		Assertions.assertEquals(src, byteData.buffer());
 		src[0] = 0x2;
 		Assertions.assertEquals(2, byteData.readAt(0));
 
 		// internal buffer re-alloc,not shard original buffer
 		byteData.expandBy(1);
+		Assertions.assertNotEquals(src, byteData.buffer());
 		src[0] = 0x3;
 		Assertions.assertEquals(2, byteData.readAt(0));
 	}
@@ -91,6 +94,22 @@ class ByteDataTest {
 
 		Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> ByteData.copyOf(src, -1, 0));
 		Assertions.assertEquals(src.length + 1, ByteData.copyOf(src, 0, src.length + 1).capacity());
+	}
+
+	@Test
+	void copyOfByteData() {
+		// @formatter:off
+		ByteData[] src = new ByteData[]{
+				ByteData.ofRepeat(1,2),
+				ByteData.ofRepeat(2,3).expandBy(4),
+				ByteData.ofRepeat(3,4)
+		};
+		// @formatter:on
+
+		Assertions.assertEquals(9, ByteData.copyOf(src).readableBytes());
+		Assertions.assertEquals(3, ByteData.copyOf(src[1]).readableBytes());
+
+		Assertions.assertEquals(9, ByteData.copyOf(Arrays.asList(src).iterator()).readableBytes());
 	}
 
 	@Test

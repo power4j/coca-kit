@@ -27,6 +27,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -142,12 +143,27 @@ public class ByteData implements Display {
 	}
 
 	/**
-	 * 创建BinData对象
-	 * @param byteData 源数据
-	 * @return 新的BinData对象
+	 * 多个BinData对象的数据拷贝
+	 * @param array 源对象数组
+	 * @return 新的BinData对象,按照参数顺序拷贝可读数据
 	 */
-	public static ByteData copyOf(ByteData byteData) {
-		return copyOf(byteData.buffer, 0, byteData.writeIndex);
+	public static ByteData copyOf(ByteData... array) {
+		ByteData data = ByteData.ofCapacity(128);
+		for (ByteData src : array) {
+			data.write(src);
+		}
+		return data;
+	}
+
+	/**
+	 * 多个BinData对象的数据拷贝
+	 * @param itr 迭代器
+	 * @return 新的BinData对象,按照参数顺序拷贝可读数据
+	 */
+	public static ByteData copyOf(Iterator<ByteData> itr) {
+		ByteData data = ByteData.ofCapacity(128);
+		itr.forEachRemaining(data::write);
+		return data;
 	}
 
 	/**

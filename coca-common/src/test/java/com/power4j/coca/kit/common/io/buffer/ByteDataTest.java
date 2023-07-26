@@ -182,6 +182,9 @@ class ByteDataTest {
 
 	@Test
 	void read() {
+		Assertions.assertEquals(0, ByteData.copyOf(new byte[] { 0, 1 }).readAt(0));
+		Assertions.assertEquals(1, ByteData.copyOf(new byte[] { 0, 1 }).readAt(1));
+
 		Assertions.assertArrayEquals(new byte[] { 0 }, ByteData.copyOf(new byte[] { 0, 1 }).read(1));
 		Assertions.assertArrayEquals(new byte[] { 0, 1 }, ByteData.copyOf(new byte[] { 0, 1 }).read(2));
 		Assertions.assertArrayEquals(new byte[] { 0, 1 }, ByteData.copyOf(new byte[] { 0, 1 }).readAll());

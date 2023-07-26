@@ -332,6 +332,18 @@ public class ByteData implements Display {
 	/**
 	 * 读出可读数据
 	 * @param offset 可读数据偏移量 {@code [0,writeIndex)}
+	 * @return 返回偏移量上的值
+	 * @throws IndexOutOfBoundsException offset < 0
+	 * @throws IllegalArgumentException 超过最大可读数据
+	 */
+	public byte readAt(int offset) {
+		assertReadPos(offset);
+		return buffer[offset];
+	}
+
+	/**
+	 * 读出可读数据
+	 * @param offset 可读数据偏移量 {@code [0,writeIndex)}
 	 * @param count 长度 {@code [0,readableBytes(offset))},负数表示全部可读数据
 	 * @return 返回数据拷贝,如果读偏移量大于等于写指针,返回空数组
 	 * @throws IndexOutOfBoundsException offset < 0

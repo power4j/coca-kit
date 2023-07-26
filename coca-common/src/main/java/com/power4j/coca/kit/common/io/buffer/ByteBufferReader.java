@@ -295,7 +295,7 @@ public class ByteBufferReader {
 	 * @return T
 	 */
 	public ByteBufferReader unreadAll() {
-		return unread(readableBytes());
+		return unread(hasRead());
 	}
 
 	/**

@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 
@@ -91,6 +92,31 @@ public class ByteBufferReader {
 	 */
 	public char readChar() {
 		return buffer.getChar();
+	}
+
+	/**
+	 * 读多个byte,并进行填充
+	 * @param length 目标长度
+	 * @param val 填充字节,可读数据不足时使用
+	 * @param padLeft 是否在左边填充填字节,可读数据不足时使用
+	 * @return byte 数组
+	 * @throws BufferUnderflowException 无数据可读
+	 */
+	public byte[] readOrFill(int length, byte val, boolean padLeft) {
+		int readable = readableBytes();
+		if (length > readable) {
+			byte[] bytes = new byte[length];
+			if (padLeft) {
+				Arrays.fill(bytes, 0, length - readable, val);
+				transfer(bytes, length - readable, readable);
+			}
+			else {
+				transfer(bytes, 0, readable);
+				Arrays.fill(bytes, readable, length, val);
+			}
+			return bytes;
+		}
+		return readBytes(length);
 	}
 
 	/**
@@ -252,13 +278,23 @@ public class ByteBufferReader {
 	 * @param length 字节数
 	 * @throws BufferUnderflowException 无数据可读
 	 */
-	public void transfer(byte[] dest, int offset, int length) {
+	public ByteBufferReader transfer(byte[] dest, int offset, int length) {
 		if (length > readableBytes()) {
 			throw new BufferUnderflowException();
 		}
 		while (length-- > 0) {
 			dest[offset++] = readByte();
 		}
+		return this;
+	}
+
+	/**
+	 * 读多个byte到外部
+	 * @param dest 写入目标
+	 * @throws BufferUnderflowException 无数据可读
+	 */
+	public ByteBufferReader transfer(byte[] dest) {
+		return transfer(dest, 0, dest.length);
 	}
 
 	/**

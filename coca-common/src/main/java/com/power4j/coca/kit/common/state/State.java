@@ -17,6 +17,8 @@
 package com.power4j.coca.kit.common.state;
 
 import com.power4j.coca.kit.common.text.Display;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.lang.Nullable;
 
 import java.util.Objects;
@@ -70,7 +72,10 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * 检查是否为一个错误
+	 * 检查是否为一个错误 <pre>
+	 *     State.error(1).isError()    -> true
+	 *     State.ok(null).isError()    -> false
+	 * </pre>
 	 * @return 返回true表示错误
 	 */
 	public boolean isError() {
@@ -78,7 +83,11 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * 如果是错误,再对错误进行检查
+	 * 如果是错误,再对错误进行检查 <pre>
+	 *     State.error(-1).isErrorAnd(err -> err == -1)   -> true
+	 *     State.error(-1).isErrorAnd(err -> err == 0 )   -> false
+	 *     State.ok(null).isErrorAnd(err -> true)         -> false, predicate not used
+	 * </pre>
 	 * @param predicate 断言函数
 	 * @return 返回true表示是错误,并且断言成功
 	 */
@@ -87,7 +96,11 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * 检查不是一个错误
+	 * 检查不是一个错误 <pre>
+	 *     State.error(1).isOk()       -> false
+	 *     State.ok(null).isOk()       -> true
+	 *     State.ok(1).isOk()          -> true
+	 * </pre>
 	 * @return 返回true表示错误
 	 */
 	public boolean isOk() {
@@ -95,7 +108,11 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * 如果不是错误,再对返回值进行检查
+	 * 如果不是错误,再对返回值进行检查 <pre>
+	 *     State.ok(-1).isOkAnd(val -> val == -1)       -> true
+	 *     State.ok(-1).isOkAnd(val -> val == 0 )       -> false
+	 *     State.error(-1).isOkAnd(val -> true)         -> false, predicate not used
+	 * </pre>
 	 * @param predicate 断言函数
 	 * @return 返回true表示不是错误,并且断言成功
 	 */
@@ -104,7 +121,11 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * 获取返回值
+	 * 获取返回值 <pre>
+	 *     State.ok(-1).unwrap()         -> -1
+	 *     State.ok(null).unwrap()       -> null
+	 *     State.error(-1).unwrap()      -> IllegalStateException
+	 * </pre>
 	 * @return T 原始返回值
 	 * @throws IllegalStateException 如果没有返回值则抛出异常
 	 * @see State#isError()
@@ -113,16 +134,16 @@ public final class State<T, E> implements Display {
 	@Nullable
 	public T unwrap() {
 		if (isError()) {
-			throw new IllegalStateException("no value object");
+			throw new IllegalStateException("State is error");
 		}
 		return value;
 	}
 
 	/**
-	 * 获取返回值,并且断言非值不是{@code null}
-	 * <pre>
-	 *     State.ok(null).unwrapNonNull()   -> error
+	 * 获取返回值,并且断言非值不是{@code null} <pre>
 	 *     State.ok("1").unwrapNonNull()    -> '1'
+	 *     State.error(-1).unwrap()         -> IllegalStateException
+	 *     State.ok(null).unwrapNonNull()   -> NullPointerException
 	 * </pre>
 	 * @return T 原始返回值
 	 * @throws IllegalStateException 如果没有返回值则抛出异常
@@ -139,7 +160,10 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * 获取返回值
+	 * 获取返回值 <pre>
+	 *     State.ok(1).unwrapOr(2)             -> 1
+	 *     State.error(-1).unwrapOr(2)         -> 2
+	 * </pre>
 	 * @param defVal 默认值
 	 * @return T 如果不是错误则返回原始值,否则返回默认值
 	 * @see State#isError()
@@ -153,7 +177,10 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * 获取返回值
+	 * 获取返回值 <pre>
+	 *     State.ok(1).unwrapOr(() -> 2)             -> 1
+	 *     State.error(-1).unwrapOr(() -> 2)         -> 2
+	 * </pre>
 	 * @param supplier 函数
 	 * @return T 如果不是错误则返回原始值,否则由supplier提供返回值
 	 */
@@ -166,7 +193,10 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * 获取错误值
+	 * 获取错误值 <pre>
+	 *     State.error(-1).unwrapError()         -> -1
+	 *     State.ok(null).unwrapError()          -> IllegalStateException
+	 * </pre>
 	 * @return E
 	 * @throws IllegalStateException 如果没有返回值则抛出异常
 	 * @see State#tryUnwrapError()
@@ -176,7 +206,10 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * 尝试获取错误值
+	 * 尝试获取错误值 <pre>
+	 *     State.error(-1).tryUnwrapError()         -> Optional(-1)
+	 *     State.ok(null).tryUnwrapError()          -> Optional(empty)
+	 * </pre>
 	 * @return T 如果没有返回值则返回 empty
 	 * @see State#isError()
 	 *
@@ -189,7 +222,10 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * {@code State<T,E>} 转换为 {@code State<U,E>}
+	 * {@code State<T,E>} 转换为 {@code State<U,E>} <pre>
+	 *     State.ok(1).map(val -> "val "+ val)         -> State.ok("val 1")
+	 *     State.error(1).map(val -> "val "+ val)      -> State.error(1)
+	 * </pre>
 	 * @param func 转换函数
 	 * @return State
 	 * @param <U> 新的值类型
@@ -203,7 +239,10 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * {@code State<T,E>} 转换为 {@code State<T,F>}
+	 * {@code State<T,E>} 转换为 {@code State<T,F>} <pre>
+	 *     State.error(1).mapError(err -> "error "+ err)      -> State.error("error 1")
+	 *     State.ok(1).mapError(err -> "error "+ err)         -> State.ok(1)
+	 * </pre>
 	 * @param func 转换函数
 	 * @return State
 	 * @param <F> 新的错误类型
@@ -217,8 +256,9 @@ public final class State<T, E> implements Display {
 
 	/**
 	 * 如果不是错误,则将T转换为U并返回,否则返回默认值 <pre>
-	 *     Assertions.assertEquals(1,State.ok(1).mapOr(Function.identity(),2));
-	 *     Assertions.assertEquals(2,State.error("ERR").mapOr(Function.identity(),2));
+	 *     State.ok(1).mapOr(val -> val + 1,-1)           -> 2
+	 *     State.ok(1).mapOr(val -> val + 10,-1)          -> 11
+	 *     State.error(1).mapOr(val -> val + 1,-1)        -> -1 ,fallback to default value
 	 * </pre>
 	 * @param func 值转换函数
 	 * @param defVal 默认值
@@ -235,8 +275,9 @@ public final class State<T, E> implements Display {
 
 	/**
 	 * 如果不是错误,则将T转换为U并返回,否则返回计算值 <pre>
-	 *     Assertions.assertEquals(1,State.error("ERR").mapOrElse(Function.identity(),() -> 1));
-	 *     Assertions.assertEquals(123,State.ok(123).mapOrElse(Function.identity(),() -> 1));
+	 *     State.ok(1).mapOr(val -> val + 1, () -> -1)          -> 2
+	 *     State.ok(1).mapOr(val -> val + 10,() -> -1)          -> 11
+	 *     State.error(1).mapOr(val -> val + 1,() -> -1)        -> -1 ,fallback to supplier
 	 * </pre>
 	 * @param func 值转换函数
 	 * @param supplier 默认值函数
@@ -254,8 +295,10 @@ public final class State<T, E> implements Display {
 
 	/**
 	 * Stated对象"与"操作 <pre>
-	 *     Assertions.assertEquals(123,State.ok("aaa").and(State.ok(123)).unwrap());
-	 *     Assertions.assertEquals("aaa",State.ok(123).and(State.ok("aaa")).unwrap());
+	 *     State.ok(1).and(State.ok("1"))           -> State.ok("1"), use second
+	 *     State.ok(1).and(State.error("1"))        -> State.error("1"), use second
+	 *     State.error(1).and(State.ok("1"))        -> State.error(1), original error
+	 *     State.error(1).and(State.error("1"))     -> State.error(1) original error
 	 * </pre>
 	 * @param state 具有相同错误类型的State对象
 	 * @return State<U,E>
@@ -271,8 +314,10 @@ public final class State<T, E> implements Display {
 
 	/**
 	 * Stated函数"与"操作 <pre>
-	 *     Assertions.assertEquals(123,State.ok("aaa").andThen(o -> State.ok(123)).unwrap());
-	 *     Assertions.assertEquals("aaa",State.ok(123).andThen(o -> State.ok("aaa")).unwrap());
+	 *     State.ok(1).andThen(val -> State.ok("1"))           -> State.ok("1")
+	 *     State.ok(1).andThen(val -> State.error("1"))        -> State.error("1")
+	 *     State.error(1).andThen(val -> State.ok("1"))        -> State.error(1), original error
+	 *     State.error(1).andThen(val -> State.error("1"))     -> State.error(1), original error
 	 * </pre>
 	 * @param func 转换函数
 	 * @return 返回新的 State
@@ -288,8 +333,10 @@ public final class State<T, E> implements Display {
 
 	/**
 	 * Stated对象"或"操作 <pre>
-	 *     Assertions.assertEquals(1,State.error("xx").or(State.ok(1)).unwrap());
-	 *     Assertions.assertEquals("x",State.ok("x").or(State.ok("y")).unwrap());
+	 *     State.error(1).or(State.ok("1"))           -> State.ok("1"), use second
+	 *     State.error(1).or(State.error("1"))        -> State.error("1"), use second
+	 *     State.ok(1).or(State.ok("1"))              -> State.ok(1), original ok
+	 *     State.ok(1).or(State.error("1"))           -> State.ok(1) original ok
 	 * </pre>
 	 * @param state 具有不同错误类型的State对象
 	 * @return State<T,F>
@@ -305,10 +352,10 @@ public final class State<T, E> implements Display {
 
 	/**
 	 * Stated函数"或"操作 <pre>
-	 *     Assertions.assertTrue(State.error("xx").orElse(e -> State.ok(1)).isOk());
-	 *     Assertions.assertTrue(State.error("xx").orElse(e -> State.error(1)).isError());
-	 *     Assertions.assertTrue(State.ok(1).orElse(e -> State.ok(1)).isOk());
-	 *     Assertions.assertTrue(State.ok(1).orElse(e -> State.error(1)).isOk());
+	 *     State.error(1).orElse(err -> State.ok("1"))           -> State.ok("1")
+	 *     State.error(1).orElse(err -> State.error(""))         -> State.error("")
+	 *     State.ok(1).orElse(err -> State.ok("1"))              -> State.ok(1), original ok
+	 *     State.ok(1).orElse(err -> State.error(""))            -> State.ok(1) original ok
 	 * </pre>
 	 * @param func 转换函数,如果未出错则执行
 	 * @return 返回新的 State
@@ -323,16 +370,19 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
-	 * 嵌套State平坦化 <pre>
-	 *     Assertions.assertEquals(1,State.flatten(State.ok(State.ok(1))).unwrap());
+	 * 移除一层嵌套State <pre>
+	 *     State.flatten(State.ok(State.ok(1)))             ->  State.ok(1)
+	 *     State.flatten(State.ok(State.error(1)))          ->  State.error(1)
+	 *     State.flatten(State.ok(State.ok(State.ok(1))))   ->  State.ok(State.ok(1))
+	 *     State.flatten(State.error(1))                    ->  State.error(1)
 	 * </pre>
 	 * @param state 嵌套State对象
-	 * @return 返回普通State对象
+	 * @return 返回内层State对象
 	 * @param <T> 值类型
 	 * @param <E> 错误类型
 	 */
 	public static <T, E> State<T, E> flatten(State<? extends State<T, E>, E> state) {
-		return state.map(State::unwrap);
+		return state.andThen(Function.identity());
 	}
 
 	@Override
@@ -349,6 +399,34 @@ public final class State<T, E> implements Display {
 			}
 		}
 		return "Error(" + error + ")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		State<?, ?> state = (State<?, ?>) o;
+		if (state.isError() && isError()) {
+			return new EqualsBuilder().append(error, state.error).isEquals();
+		}
+		else if (state.isOk() && isOk()) {
+			return new EqualsBuilder().append(value, state.value).isEquals();
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		if (isError()) {
+			return new HashCodeBuilder(17, 37).append(error).toHashCode();
+		}
+		else {
+			return new HashCodeBuilder(17, 37).append(value).toHashCode();
+		}
 	}
 
 }

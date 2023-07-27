@@ -35,7 +35,12 @@ public class BCD {
 	private final static int COMPRESS = 2;
 
 	/**
-	 * Encode string with numbers (decimal) to BCD encoded bytes (big endian)
+	 * Encode string with numbers (decimal) to BCD encoded bytes (big endian) <pre>
+	 *     encode("31")   -> [0x31]
+	 *     encode("231")  -> [0x02, 0x31]
+	 *     encode("A")    -> error
+	 *     encode("")     -> error
+	 * </pre>
 	 * @param value Number that needs to be converted
 	 * @return BCD encoded number
 	 * @throws IllegalArgumentException if input is not a number
@@ -63,7 +68,10 @@ public class BCD {
 	}
 
 	/**
-	 * Encode value to BCD encoded bytes (big endian)
+	 * Encode value to BCD encoded bytes (big endian) <pre>
+	 *     encode(BigInteger.ZERO)                -> [0x0]
+	 *     BCD.encode(BigInteger.ONE.negate())    -> error
+	 * </pre>
 	 * @param value number
 	 * @return BCD encoded number
 	 * @throws IllegalArgumentException if input is negative
@@ -82,6 +90,10 @@ public class BCD {
 
 	/**
 	 * Encode value to BCD encoded bytes (big endian) in a byte array of a specific length
+	 * <pre>
+	 *     encode(BigInteger.ZERO,2)                 -> [0x00, 0x00]
+	 *     BCD.encode(BigInteger.valueOf(100), 1)    -> error
+	 * </pre>
 	 * @param value number
 	 * @param length length of the byte array
 	 * @return BCD encoded number
@@ -91,7 +103,7 @@ public class BCD {
 		if (value.signum() == -1) {
 			throw new IllegalArgumentException("Only non-negative values are supported");
 		}
-		else if (value.bitLength() > length * 8) {
+		else if (value.bitLength() > length * Byte.SIZE) {
 			throw new IllegalArgumentException("Value does not fit in byte array of length" + length);
 		}
 		if (value.bitLength() > 63) {
@@ -104,6 +116,10 @@ public class BCD {
 
 	/**
 	 * Encode value to BCD encoded bytes (big endian) in a byte array of a specific length
+	 * <pre>
+	 *     BCD.encode(231, 4)    -> [0x00, 0x00, 0x02, 0x31]
+	 *     BCD.encode(0, 2)      -> [0x00, 0x00]
+	 * </pre>
 	 * @param value number
 	 * @param length length of the byte array
 	 * @return BCD encoded number
@@ -133,7 +149,10 @@ public class BCD {
 	}
 
 	/**
-	 * Encode value to BCD encoded bytes (big endian)
+	 * Encode value to BCD encoded bytes (big endian) <pre>
+	 *     BCD.encode(31)    -> [0x31]
+	 *     BCD.encode(231)   -> [0x02, 0x31]
+	 * </pre>
 	 * @param value number
 	 * @return BCD encoded number
 	 * @throws IllegalArgumentException if input is negative
@@ -150,7 +169,13 @@ public class BCD {
 	}
 
 	/**
-	 * Decodes BCD encoded bytes to BigInteger
+	 * Decodes BCD encoded bytes to BigInteger <pre>
+	 *     BCD.decode(new byte[] { 0x02, 0x31 }).intValue()   -> 231
+	 *     BCD.decode(new byte[] { 0x31 }).intValue()         -> 31
+	 *     BCD.decode(new byte[] { 0x0 }).intValue()          -> 0
+	 *     BCD.decode(new byte[] {-48 })                      -> error
+	 *     BCD.decode(new byte[] { 0x0d })                    -> error
+	 * </pre>
 	 * @param bcd BCD encoded bytes
 	 * @return encoded number
 	 * @throws IllegalArgumentException if an illegal byte is detected
@@ -173,7 +198,12 @@ public class BCD {
 	}
 
 	/**
-	 * Decodes BCD encoded bytes directly to a decimal string
+	 * Decodes BCD encoded bytes directly to a decimal string <pre>
+	 *     BCD.decodeAsString(new byte[] { 0x31 },true)            -> '31'
+	 *     BCD.decodeAsString(new byte[] { 0x02, 0x31 }, true)     -> '231'
+	 *     BCD.decodeAsString(new byte[] { 0x02, 0x31 }, false)    -> '0231'
+	 *     BCD.decodeAsString(new byte[] { 0x00 }, false)          -> '00'
+	 * </pre>
 	 * @param bcd BCD encoded bytes
 	 * @param stripLeadingZero strip leading zero if value is of odd length
 	 * @return encoded number as String

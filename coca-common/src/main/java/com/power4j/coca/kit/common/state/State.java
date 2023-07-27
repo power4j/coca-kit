@@ -119,6 +119,26 @@ public final class State<T, E> implements Display {
 	}
 
 	/**
+	 * 获取返回值,并且断言非值不是{@code null}
+	 * <pre>
+	 *     State.ok(null).unwrapNonNull()   -> error
+	 *     State.ok("1").unwrapNonNull()    -> '1'
+	 * </pre>
+	 * @return T 原始返回值
+	 * @throws IllegalStateException 如果没有返回值则抛出异常
+	 * @throws NullPointerException 有值,但是值为null
+	 * @see State#isError()
+	 * @see State#unwrapOrElse(Supplier)
+	 */
+	public T unwrapNonNull() {
+		final T val = unwrap();
+		if (val == null) {
+			throw new NullPointerException("value is null");
+		}
+		return val;
+	}
+
+	/**
 	 * 获取返回值
 	 * @param defVal 默认值
 	 * @return T 如果不是错误则返回原始值,否则返回默认值

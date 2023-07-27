@@ -75,6 +75,12 @@ class StateTest {
 	}
 
 	@Test
+	void unwrapNonNull(){
+		Assertions.assertThrows(NullPointerException.class,() -> State.ok(null).unwrapNonNull());
+		Assertions.assertEquals("1",State.ok("1").unwrapNonNull());
+	}
+
+	@Test
 	void unwrapOr() {
 		// 错误使用默认值
 		State<String, ?> state = State.error("xx");

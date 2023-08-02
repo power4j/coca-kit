@@ -30,6 +30,23 @@ import java.nio.charset.StandardCharsets;
 class ByteBufferReaderTest {
 
 	@Test
+	void readOrFill() {
+		byte[] data = { (byte) 1, (byte) 2, (byte) 3, (byte) 4 };
+		ByteBufferReader reader;
+
+		reader = ByteBufferReader.of(BufferKit.wrap(data));
+		Assertions.assertArrayEquals(new byte[] { (byte) 0xFF, (byte) 1, (byte) 2, (byte) 3, (byte) 4 },
+				reader.readOrFill(5, (byte) 0xFF, true));
+
+		reader = ByteBufferReader.of(BufferKit.wrap(data));
+		Assertions.assertArrayEquals(new byte[] { (byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 0xFF },
+				reader.readOrFill(5, (byte) 0xFF, false));
+
+		reader = ByteBufferReader.of(BufferKit.wrap(data));
+		Assertions.assertArrayEquals(new byte[] { (byte) 1, (byte) 2 }, reader.readOrFill(2, (byte) 0xFF, false));
+	}
+
+	@Test
 	void readNextByte() {
 		byte[] data = { (byte) 1, (byte) 2, (byte) 3, (byte) 4 };
 		ByteBufferReader reader = ByteBufferReader.of(BufferKit.wrap(data));
@@ -222,19 +239,22 @@ class ByteBufferReaderTest {
 		reader.unread(1);
 		Assertions.assertEquals(4, reader.readableBytes());
 
-		val = reader.readByte();
-		Assertions.assertEquals(1, val);
-
+		reader.readByte();
 		reader.unread(-1);
 		Assertions.assertEquals(3, reader.readableBytes());
-
 		reader.unread(0);
 		Assertions.assertEquals(3, reader.readableBytes());
-
 		reader.unread(100);
 		Assertions.assertEquals(4, reader.readableBytes());
 
-		Assertions.assertEquals(3, reader.unreadAll().skip(1).readableBytes());
+		reader = ByteBufferReader.of(BufferKit.wrap(new byte[10]));
+		reader.readBytes(2);
+		reader.readBytes(6);
+		Assertions.assertEquals(2, reader.readableBytes());
+		reader.unread(1);
+		Assertions.assertEquals(3, reader.readableBytes());
+		reader.unreadAll();
+		Assertions.assertEquals(10, reader.readableBytes());
 	}
 
 	@Test

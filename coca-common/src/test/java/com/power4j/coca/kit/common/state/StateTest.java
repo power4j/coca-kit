@@ -19,6 +19,7 @@ package com.power4j.coca.kit.common.state;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -72,6 +73,12 @@ class StateTest {
 
 		State<String, ?> state2 = State.ok("xx");
 		Assertions.assertEquals("xx", state2.unwrap());
+	}
+
+	@Test
+	void unwrapNonNull() {
+		Assertions.assertThrows(NullPointerException.class, () -> State.ok(null).unwrapNonNull());
+		Assertions.assertEquals("1", State.ok("1").unwrapNonNull());
 	}
 
 	@Test
@@ -192,9 +199,12 @@ class StateTest {
 
 	@Test
 	void flatten() {
-		Assertions.assertEquals(1, State.flatten(State.ok(State.ok(1))).unwrap());
 
-		Assertions.assertEquals("xx", State.flatten(State.error("xx")).unwrapError());
+		Assertions.assertEquals(State.ok(1), State.flatten(State.ok(State.ok(1))));
+		Assertions.assertEquals(State.error(1), State.flatten(State.ok(State.error(1))));
+		Assertions.assertEquals(State.ok(State.ok(1)), State.flatten(State.ok(State.ok(State.ok(1)))));
+		Assertions.assertEquals(State.error(1), State.flatten(State.error(1)));
+
 	}
 
 	@Test
@@ -217,6 +227,50 @@ class StateTest {
 
 		state1 = State.ok(Optional.of(1));
 		Assertions.assertEquals("Ok", state1.display());
+	}
+
+	@Test
+	void equalAndHash() {
+		State<?, ?> state = State.ok(null);
+		Assertions.assertEquals(state, state);
+
+		State<?, ?> lh;
+		State<?, ?> rh;
+
+		lh = State.ok(null);
+		rh = State.ok(null);
+		Assertions.assertEquals(lh, rh);
+		Assertions.assertEquals(lh.hashCode(), rh.hashCode());
+
+		lh = State.ok(BigInteger.valueOf(100));
+		rh = State.ok(BigInteger.valueOf(100));
+		Assertions.assertEquals(lh, rh);
+		Assertions.assertEquals(lh.hashCode(), rh.hashCode());
+
+		lh = State.ok(1);
+		rh = State.ok(Integer.valueOf(1));
+		Assertions.assertEquals(lh, rh);
+		Assertions.assertEquals(lh.hashCode(), rh.hashCode());
+
+		lh = State.ok("1");
+		rh = State.ok(Integer.toString(1));
+		Assertions.assertEquals(lh, rh);
+		Assertions.assertEquals(lh.hashCode(), rh.hashCode());
+
+		lh = State.ok(State.ok("1"));
+		rh = State.ok(State.ok(Integer.toString(1)));
+		Assertions.assertEquals(lh, rh);
+		Assertions.assertEquals(lh.hashCode(), rh.hashCode());
+
+		lh = State.ok(1);
+		rh = State.ok(2);
+		Assertions.assertNotEquals(lh, rh);
+		Assertions.assertNotEquals(lh.hashCode(), rh.hashCode());
+
+		lh = State.ok(1L);
+		rh = State.ok(1);
+		Assertions.assertNotEquals(lh, rh);
+
 	}
 
 }

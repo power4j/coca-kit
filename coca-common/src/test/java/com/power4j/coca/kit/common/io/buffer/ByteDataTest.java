@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.BufferOverflowException;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * @author CJ (power4j@outlook.com)
@@ -45,6 +46,24 @@ class ByteDataTest {
 		Assertions.assertEquals(0, byteData.writeIndex());
 		Assertions.assertEquals(0, byteData.writableBytes());
 		Assertions.assertEquals(0, byteData.readableBytes());
+	}
+
+	@Test
+	void shardOf() {
+		byte[] src = new byte[] { 0x1, 0x2, 0x3, 0x4 };
+		ByteData byteData = ByteData.shardOf(src);
+		Assertions.assertEquals(4, byteData.writeIndex());
+
+		// internal buffer shard with original buffer
+		Assertions.assertEquals(src, byteData.buffer());
+		src[0] = 0x2;
+		Assertions.assertEquals(2, byteData.readAt(0));
+
+		// internal buffer re-alloc,not shard original buffer
+		byteData.expandBy(1);
+		Assertions.assertNotEquals(src, byteData.buffer());
+		src[0] = 0x3;
+		Assertions.assertEquals(2, byteData.readAt(0));
 	}
 
 	@Test
@@ -72,6 +91,25 @@ class ByteDataTest {
 		Assertions.assertEquals(0, byteData2.writableBytes());
 		Assertions.assertEquals(4, byteData2.readableBytes());
 		Assertions.assertArrayEquals(byteData1.buffer(), byteData1.buffer());
+
+		Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> ByteData.copyOf(src, -1, 0));
+		Assertions.assertEquals(src.length + 1, ByteData.copyOf(src, 0, src.length + 1).capacity());
+	}
+
+	@Test
+	void copyOfByteData() {
+		// @formatter:off
+		ByteData[] src = new ByteData[]{
+				ByteData.ofRepeat(1,2),
+				ByteData.ofRepeat(2,3).expandBy(4),
+				ByteData.ofRepeat(3,4)
+		};
+		// @formatter:on
+
+		Assertions.assertEquals(9, ByteData.copyOf(src).readableBytes());
+		Assertions.assertEquals(3, ByteData.copyOf(src[1]).readableBytes());
+
+		Assertions.assertEquals(9, ByteData.copyOf(Arrays.asList(src).iterator()).readableBytes());
 	}
 
 	@Test
@@ -182,6 +220,9 @@ class ByteDataTest {
 
 	@Test
 	void read() {
+		Assertions.assertEquals(0, ByteData.copyOf(new byte[] { 0, 1 }).readAt(0));
+		Assertions.assertEquals(1, ByteData.copyOf(new byte[] { 0, 1 }).readAt(1));
+
 		Assertions.assertArrayEquals(new byte[] { 0 }, ByteData.copyOf(new byte[] { 0, 1 }).read(1));
 		Assertions.assertArrayEquals(new byte[] { 0, 1 }, ByteData.copyOf(new byte[] { 0, 1 }).read(2));
 		Assertions.assertArrayEquals(new byte[] { 0, 1 }, ByteData.copyOf(new byte[] { 0, 1 }).readAll());
@@ -368,6 +409,16 @@ class ByteDataTest {
 		Assertions.assertEquals(1, ByteData.ofRepeat(1, 1).bufferReader(ByteOrder.BIG_ENDIAN).readableBytes());
 		Assertions.assertEquals(1,
 				ByteData.ofRepeat(1, 1).expandBy(1).bufferReader(ByteOrder.BIG_ENDIAN).readableBytes());
+	}
+
+	@Test
+	void buffCopy() {
+		ByteData byteData = ByteData.copyOf(new byte[] { 0x11, 0x22, 0x33, 0x44 });
+
+		Assertions.assertArrayEquals(new byte[] { 0x22 }, byteData.buffCopy(1, 1).readAll());
+
+		Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> byteData.buffCopy(-1, 1));
+
 	}
 
 	@Test

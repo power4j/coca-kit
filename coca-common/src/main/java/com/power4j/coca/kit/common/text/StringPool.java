@@ -145,7 +145,13 @@ public interface StringPool {
 
 	String RETURN = "\r";
 
-	String NEWLINE = "\n";
+	String LF = "\n";
+
+	/**
+	 * @deprecated use {@code LF} instead
+	 * @see StringPool#LF
+	 */
+	String NEWLINE = LF;
 
 	String CRLF = "\r\n";
 

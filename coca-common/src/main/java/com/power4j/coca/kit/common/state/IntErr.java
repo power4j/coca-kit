@@ -22,23 +22,23 @@ import org.springframework.lang.Nullable;
  * @author CJ (power4j@outlook.com)
  * @since 1.0
  */
-public class IntErr extends BaseErrKind<Integer, Integer> {
+public class IntErr extends BaseErrKind<String, Integer> {
 
-	public IntErr(int kind, int code, @Nullable String message) {
+	public IntErr(String kind, int code, @Nullable String message) {
 		super(kind, code, message);
 	}
 
-	public static IntErr of(int kind, int code, @Nullable String message) {
+	public static IntErr of(String kind, int code, @Nullable String message) {
 		return new IntErr(kind, code, message);
 	}
 
 	public static IntErr of(int code, @Nullable String message) {
-		return new IntErr(0, code, message);
+		return new IntErr(ErrKind.NO_KIND, code, message);
 	}
 
 	@Override
 	public String display() {
-		return String.format("[kind %d,error %d] - %s", getKind(), getCode(), getMessage());
+		return String.format("[kind %s,error %d] - %s", getKind(), getCode(), getMessage());
 	}
 
 }

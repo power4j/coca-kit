@@ -29,13 +29,13 @@ class StrErrTest {
 	void display() {
 		// "[kind %d,error %s] - %s"
 		StrErr err = StrErr.of("E100", null);
-		Assertions.assertEquals("[kind 0,error E100] - ok", err.display());
+		Assertions.assertEquals("[kind: ?,error: E100] - ok", err.display());
 
 		err = StrErr.of("E100", "fail");
-		Assertions.assertEquals("[kind 0,error E100] - fail", err.display());
+		Assertions.assertEquals("[kind: ?,error: E100] - fail", err.display());
 
-		err = StrErr.of(-1, "E100", "fail");
-		Assertions.assertEquals("[kind -1,error E100] - fail", err.display());
+		err = StrErr.of("global", "E100", "fail");
+		Assertions.assertEquals("[kind: global,error: E100] - fail", err.display());
 	}
 
 }

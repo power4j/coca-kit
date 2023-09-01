@@ -28,13 +28,13 @@ class IntErrTest {
 	@Test
 	void display() {
 		IntErr err = IntErr.of(0xF, null);
-		Assertions.assertEquals("[kind 0,error 15] - ok", err.display());
+		Assertions.assertEquals("[kind: ?,error: 15] - ok", err.display());
 
 		err = IntErr.of(0x1, "fail");
-		Assertions.assertEquals("[kind 0,error 1] - fail", err.display());
+		Assertions.assertEquals("[kind: ?,error: 1] - fail", err.display());
 
-		err = IntErr.of(-1, 0x1, "fail");
-		Assertions.assertEquals("[kind -1,error 1] - fail", err.display());
+		err = IntErr.of("global", 0x1, "fail");
+		Assertions.assertEquals("[kind: global,error: 1] - fail", err.display());
 	}
 
 }

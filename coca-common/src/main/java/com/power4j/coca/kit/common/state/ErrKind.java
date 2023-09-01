@@ -24,6 +24,8 @@ import com.power4j.coca.kit.common.text.Display;
  */
 public interface ErrKind<K extends Comparable<K>, T extends Comparable<T>> extends Err<T>, Display {
 
+	String NO_KIND = "?";
+
 	/**
 	 * Error kind
 	 * @return kind value

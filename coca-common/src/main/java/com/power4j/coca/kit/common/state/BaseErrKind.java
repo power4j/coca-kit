@@ -16,6 +16,7 @@
 
 package com.power4j.coca.kit.common.state;
 
+import com.power4j.coca.kit.common.text.Display;
 import org.springframework.lang.Nullable;
 
 import java.util.Objects;
@@ -40,7 +41,11 @@ public class BaseErrKind<K extends Comparable<K>, T extends Comparable<T>> exten
 
 	@Override
 	public String display() {
-		return String.format("[%s] - %s", getKind(), super.display());
+		Object kindValue = kind;
+		if (kind instanceof Display) {
+			kindValue = ((Display) kind).display();
+		}
+		return String.format("[%s] - %s", kindValue, super.display());
 	}
 
 }

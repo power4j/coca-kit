@@ -83,7 +83,7 @@
     <commons-compress.version>1.23.0</commons-compress.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <jna.version>5.2.0</jna.version>
-    <spring.version>5.3.14</spring.version>
+    <spring.version>6.1.0</spring.version>
     <spring-boot.version>2.7.10</spring-boot.version>
     <jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
   </properties>

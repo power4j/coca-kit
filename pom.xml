@@ -75,7 +75,7 @@
     <slf4j.version>2.0.9</slf4j.version>
     <lombook.version>1.18.30</lombook.version>
     <hutool.version>5.8.3</hutool.version>
-    <netty.version>4.1.79.Final</netty.version>
+    <netty.version>4.1.105.Final</netty.version>
     <reactor-netty.version>1.1.14</reactor-netty.version>
     <commons-io.version>2.15.1</commons-io.version>
     <commons-codec.version>1.16.0</commons-codec.version>

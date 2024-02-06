@@ -72,7 +72,7 @@
     <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
     <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
     <!-- libs -->
-    <slf4j.version>2.0.11</slf4j.version>
+    <slf4j.version>2.0.12</slf4j.version>
     <lombook.version>1.18.30</lombook.version>
     <hutool.version>5.8.3</hutool.version>
     <netty.version>4.1.106.Final</netty.version>

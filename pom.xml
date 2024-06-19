@@ -269,10 +269,6 @@
           <version>${maven-surefire-plugin.version}</version>
           <configuration>
             <skipTests>${skipTests}</skipTests>
-            <!-- Specify the IntelliJ coverage agent -->
-            <argLine>
-              -javaagent:${settings.localRepository}/org/jetbrains/intellij/deps/intellij-coverage-agent/${intellij.coverage.agent.version}/intellij-coverage-agent-${intellij.coverage.agent.version}.jar=${intellij.agent.options}
-            </argLine>
             <!-- for jacoco : https://gist.github.com/caliburn1994/253966dec3ece0c020ebb8ab863124b9 -->
             <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
             <forkCount>1</forkCount>

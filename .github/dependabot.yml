@@ -5,7 +5,7 @@ updates:
   target-branch: "dev"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 20
 #  ignore:
 #    - dependency-name: cn.hutool:hutool-all
 #      versions:

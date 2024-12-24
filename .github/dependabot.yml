@@ -1,11 +1,16 @@
 version: 2
 updates:
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    # Check for updates to GitHub Actions every week
+    interval: "weekly"
 - package-ecosystem: maven
   directory: "/"
   target-branch: "dev"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 20
 #  ignore:
 #    - dependency-name: cn.hutool:hutool-all
 #      versions:

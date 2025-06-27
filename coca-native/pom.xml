@@ -21,8 +21,9 @@
 
   <parent>
     <groupId>com.power4j.kit</groupId>
-    <artifactId>coca-parent</artifactId>
+    <artifactId>coca-build</artifactId>
     <version>${revision}</version>
+    <relativePath>../coca-build/pom.xml</relativePath>
   </parent>
 
   <artifactId>coca-native</artifactId>

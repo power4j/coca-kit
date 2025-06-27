@@ -177,20 +177,6 @@
           </executions>
       </plugin>
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-              <archive>
-                  <manifest>
-                      <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                  </manifest>
-                  <manifestEntries>
-                      <Automatic-Module-Name>${automatic-module-name}</Automatic-Module-Name>
-                  </manifestEntries>
-              </archive>
-          </configuration>
-      </plugin>
-      <plugin>
         <groupId>pl.project13.maven</groupId>
         <artifactId>git-commit-id-plugin</artifactId>
         <configuration>

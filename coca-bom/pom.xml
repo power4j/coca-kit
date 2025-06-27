@@ -23,28 +23,54 @@
     <groupId>com.power4j.kit</groupId>
     <artifactId>coca-parent</artifactId>
     <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>coca-bom</artifactId>
   <name>${project.artifactId}</name>
   <packaging>pom</packaging>
 
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.power4j.kit</groupId>
+        <artifactId>coca-common</artifactId>
+        <version>${revision}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.power4j.kit</groupId>
+        <artifactId>coca-native</artifactId>
+        <version>${revision}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <build>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <configuration>
-          <updatePomFile>true</updatePomFile>
-          <flattenMode>oss</flattenMode>
-          <pomElements>
-            <dependencyManagement>expand</dependencyManagement>
-            <pluginManagement>remove</pluginManagement>
-            <dependencies>remove</dependencies>
-            <properties>remove</properties>
-            <repositories>remove</repositories>
-          </pomElements>
-        </configuration>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <!-- Flatten and simplify our own POM for install/deploy -->
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+            <configuration>
+              <updatePomFile>true</updatePomFile>
+              <flattenMode>bom</flattenMode>
+              <pomElements>
+                <properties>remove</properties>
+                <distributionManagement>remove</distributionManagement>
+                <dependencyManagement>resolve</dependencyManagement>
+              </pomElements>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
